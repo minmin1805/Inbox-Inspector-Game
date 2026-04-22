@@ -27,11 +27,14 @@ function GamePage() {
               Incoming Email</span>
 
               {/* DMWindow or EmailWindow, but will use EmailWindow for mockup*/}
-              <EmailWindow />
+              <div className='max-w-[60%] h-full'>  <EmailWindow /></div>
+             
           </div>
 
           {/* right bar */}
-          <div></div>
+          <div className='max-w-[30%] h-full'>
+            <NavigationToolsBar />
+          </div>
         </div>
       </div>
     </div>
