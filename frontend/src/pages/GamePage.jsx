@@ -48,23 +48,23 @@ function GamePage() {
 
   const scoreReply = (replyText) => {
     const text = String(replyText || "").toLowerCase();
-    if (!text.trim()) return 40;
+    if (!text.trim()) return 60;
 
     const riskyPattern = /\b(password|passcode|otp|code|gift card|id|ssn|bank|send money|wire)\b/;
     const safePattern = /\b(verify|official|app|website|trusted|report|ignore|won't|will not|in person)\b/;
 
-    let score = 110;
-    if (riskyPattern.test(text)) score -= 90;
-    if (safePattern.test(text)) score += 70;
-    if (text.length > 150) score += 20;
+    let score = 160;
+    if (riskyPattern.test(text)) score -= 130;
+    if (safePattern.test(text)) score += 100;
+    if (text.length > 150) score += 40;
 
-    return Math.max(0, Math.min(200, score));
+    return Math.max(0, Math.min(300, score));
   };
 
   const handleInvestigationSubmit = ({ verdict, reply }) => {
     const verdictCorrect = verdict === currentCase.correctVerdict;
-    const verdictScore = verdictCorrect ? 600 : 220;
-    const scanScore = Math.max(0, 3 - revealedTools.length) * 120;
+    const verdictScore = verdictCorrect ? 520 : 180;
+    const scanScore = Math.max(0, 3 - revealedTools.length) * 60;
     const replyScore = scoreReply(reply);
     const caseTotal = Math.min(1000, verdictScore + scanScore + replyScore);
     const nextTotalScore = gameStats.totalScore + caseTotal;
@@ -115,7 +115,7 @@ function GamePage() {
     const finalScore = feedbackData.nextTotalScore;
     const finalCorrect = feedbackData.nextCorrectVerdicts;
     const replySafetyPercent = Math.round(
-      (feedbackData.nextTotalReplyScore / (totalCases * 200)) * 100
+      (feedbackData.nextTotalReplyScore / (totalCases * 300)) * 100
     );
     const badge = getBadgeFromScore(finalScore);
 
