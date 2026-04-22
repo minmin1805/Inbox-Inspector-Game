@@ -4,12 +4,14 @@ import DMWindow from "../components/DMWindow";
 import EmailWindow from "../components/EmailWindow";
 import InvestigationToolsBar from "../components/InvestigationToolsBar";
 import VerdictWindow from "../components/VerdictWindow";
+import FeedbackPopup from "../components/FeedbackPopup";
 import levels from "../data/inboxInspectorLevels.json";
 
 function GamePage() {
   const cases = levels.cases;
   /** Start on case 4 (email) for layout mock; change index to try DM (e.g. 0 = prize DM). */
   const [caseIndex, setCaseIndex] = useState(3);
+  const [showFeedbackPopup, setShowFeedbackPopup] = useState(false);
 
   const currentCase = useMemo(
     () => cases[caseIndex] ?? cases[0],
@@ -19,7 +21,7 @@ function GamePage() {
   const isEmail = currentCase?.channel === "email";
 
   return (
-    <div className="flex min-h-dvh flex-col bg-cyan-50 text-slate-900">
+    <div className="relative flex min-h-dvh flex-col bg-cyan-50 text-slate-900">
       <Header caseNumber={currentCase.caseNumber} totalCases={totalCases} />
 
       <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:gap-10 xl:px-10 2xl:px-14">
@@ -65,11 +67,15 @@ function GamePage() {
           <VerdictWindow
             caseData={currentCase}
             onSubmit={() => {
-              // wired later: scoring + next case
+              setShowFeedbackPopup(true);
             }}
           />
         </div>
       </main>
+
+      {showFeedbackPopup && (
+        <FeedbackPopup onClose={() => setShowFeedbackPopup(false)} />
+      )}
     </div>
   );
 }
