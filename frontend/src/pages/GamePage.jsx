@@ -12,6 +12,7 @@ import sketchyIcon from '../assets/Image/GamePage/sketchyIcon.png'
 import legitIcon from '../assets/Image/GamePage/legitIcon.png'
 import DMWindow from '../components/DMWindow'
 import EmailWindow from '../components/EmailWindow'
+import NavigationToolsBar from '../components/NavigationToolsBar'
 
 function GamePage() {
   return (
