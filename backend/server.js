@@ -4,6 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import connectDB from './lib/db.js';
 import playerRoutes from './routes/playerRoute.js';
+import aiRoutes from './routes/aiRoute.js';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(express.json());
 
 //API routes
 app.use('/api/players', playerRoutes);
+app.use('/api/ai', aiRoutes);
 
 const PORT = process.env.PORT || 8000;
 

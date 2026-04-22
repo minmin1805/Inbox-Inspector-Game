@@ -14,14 +14,14 @@ const VERDICTS = [
   { id: "legit", label: "Legit", icon: legitIcon, accent: "legit" },
 ];
 
-function VerdictWindow({ caseData, onSubmit }) {
+function VerdictWindow({ caseData, onSubmit, isSubmitting = false }) {
   const [selected, setSelected] = useState("phishing");
-  const [reply, setReply] = useState(() => caseData?.starterReply || "");
+  const [reply, setReply] = useState("");
 
   useEffect(() => {
     setSelected("phishing");
-    setReply(caseData?.starterReply || "");
-  }, [caseData?.id, caseData?.starterReply]);
+    setReply("");
+  }, [caseData?.id]);
 
   const handleSubmit = (e) => {
     e?.preventDefault?.();
@@ -91,9 +91,10 @@ function VerdictWindow({ caseData, onSubmit }) {
           />
           <button
             type="submit"
+            disabled={isSubmitting}
             className="shrink-0 rounded-xl bg-sky-600 px-5 py-2.5 text-base font-extrabold text-white shadow-md transition hover:bg-sky-700 sm:px-8"
           >
-            Submit investigation
+            {isSubmitting ? "Grading reply..." : "Submit investigation"}
           </button>
         </div>
       </form>

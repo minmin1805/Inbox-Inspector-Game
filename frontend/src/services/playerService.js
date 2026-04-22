@@ -39,5 +39,19 @@ const getLeaderboard = async ({ limit = 4, mode } = {}) => {
     }
 }
 
+const gradeInboxReply = async ({ caseId, playerReply, channel, correctVerdict, theme }) => {
+    const response = await axios.post('/api/ai/grade-inbox-reply', {
+        caseId,
+        playerReply,
+        channel,
+        correctVerdict,
+        theme,
+    });
+    if (response.status === 200) {
+        return response.data;
+    }
+    throw new Error("cannot grade inbox reply");
+}
 
-export { createPlayer, updatePlayer, getLeaderboard };
+
+export { createPlayer, updatePlayer, getLeaderboard, gradeInboxReply };

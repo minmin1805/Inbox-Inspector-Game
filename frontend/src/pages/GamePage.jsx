@@ -7,7 +7,7 @@ import InvestigationToolsBar from "../components/InvestigationToolsBar";
 import VerdictWindow from "../components/VerdictWindow";
 import FeedbackPopup from "../components/FeedbackPopup";
 import levels from "../data/inboxInspectorLevels.json";
-import { updatePlayer } from "../services/playerService";
+import { gradeInboxReply, updatePlayer } from "../services/playerService";
 
 function GamePage() {
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ function GamePage() {
   });
   const [player, setPlayer] = useState(null);
   const [isFinalizing, setIsFinalizing] = useState(false);
+  const [isGradingReply, setIsGradingReply] = useState(false);
 
   const currentCase = useMemo(
     () => cases[caseIndex] ?? cases[0],
@@ -61,11 +62,90 @@ function GamePage() {
     return Math.max(0, Math.min(300, score));
   };
 
-  const handleInvestigationSubmit = ({ verdict, reply }) => {
+  const scoreReplyWithAI = async (replyText) => {
+    const localScore = scoreReply(replyText);
+    const text = String(replyText || "").trim();
+    const lower = text.toLowerCase();
+
+    // Hard local penalties for blank/gibberish before AI.
+    const noWhitespace = text.toLowerCase().replace(/\s+/g, "");
+    const uniqueRatio =
+      noWhitespace.length > 0 ? new Set(noWhitespace).size / noWhitespace.length : 0;
+    const alphaRatio =
+      noWhitespace.length > 0
+        ? noWhitespace.replace(/[^a-z]/g, "").length / noWhitespace.length
+        : 0;
+    const looksLikeGibberish =
+      text.length > 0 &&
+      (text.length < 8 ||
+        uniqueRatio < 0.22 ||
+        alphaRatio < 0.45 ||
+        /(.)\1{4,}/.test(noWhitespace));
+
+    if (!text || looksLikeGibberish) {
+      return {
+        replyScore: Math.min(localScore, 40),
+        aiCoachTip:
+          "Your reply should be clear and specific. Avoid blank or random text.",
+      };
+    }
+
+    // Strong deterministic penalties for unsafe advice, especially in phishing/sketchy levels.
+    const riskyActionPattern =
+      /\b(click|tap|open|use)\b.{0,40}\b(link|button|url)\b|\bsend\b.{0,30}\b(code|otp|id|money|payment)\b|\bshare\b.{0,30}\b(code|password|id)\b/i;
+    const trustsMessagePattern =
+      /\b(this|it|message)\b.{0,20}\b(legit|safe|trusted|real)\b|\bi\s*(will|would)\s*(click|tap|open)\b/i;
+    const encouragesUnsafe =
+      riskyActionPattern.test(text) || trustsMessagePattern.test(text);
+
+    if (currentCase.correctVerdict !== "legit" && encouragesUnsafe) {
+      return {
+        replyScore: 15,
+        aiCoachTip:
+          "Unsafe plan detected. For suspicious messages, do not click links/buttons; verify through official channels.",
+      };
+    }
+
+    if (currentCase.correctVerdict === "legit" && riskyActionPattern.test(text) && /send|share|code|password|id|money|payment/i.test(lower)) {
+      return {
+        replyScore: 45,
+        aiCoachTip:
+          "Even when messages look legit, never share sensitive details in replies.",
+      };
+    }
+
+    try {
+      const ai = await gradeInboxReply({
+        caseId: currentCase.id,
+        playerReply: text,
+        channel: currentCase.channel,
+        correctVerdict: currentCase.correctVerdict,
+        theme: currentCase.theme,
+      });
+
+      const bandBonus = ai.replySafetyBand === "strong" ? 70 : ai.replySafetyBand === "ok" ? 25 : -70;
+      const credentialPenalty = ai.sharesCredentials ? -80 : 0;
+      const blended = Math.max(0, Math.min(300, localScore + bandBonus + credentialPenalty));
+
+      return {
+        replyScore: blended,
+        aiCoachTip: ai.coachTip,
+      };
+    } catch {
+      return {
+        replyScore: localScore,
+        aiCoachTip: "Use clear safe actions and avoid sharing sensitive details.",
+      };
+    }
+  };
+
+  const handleInvestigationSubmit = async ({ verdict, reply }) => {
+    if (isGradingReply) return;
+    setIsGradingReply(true);
     const verdictCorrect = verdict === currentCase.correctVerdict;
     const verdictScore = verdictCorrect ? 520 : 180;
     const scanScore = Math.max(0, 3 - revealedTools.length) * 60;
-    const replyScore = scoreReply(reply);
+    const { replyScore, aiCoachTip } = await scoreReplyWithAI(reply);
     const caseTotal = Math.min(1000, verdictScore + scanScore + replyScore);
     const nextTotalScore = gameStats.totalScore + caseTotal;
     const nextCorrectVerdicts = gameStats.correctVerdicts + (verdictCorrect ? 1 : 0);
@@ -83,12 +163,16 @@ function GamePage() {
       scanScore,
       replyScore,
       caseTotal,
-      tip: currentCase?.coachTip || "If unsure, verify through an official channel.",
+      tip:
+        aiCoachTip ||
+        currentCase?.coachTip ||
+        "If unsure, verify through an official channel.",
       nextTotalScore,
       nextCorrectVerdicts,
       nextTotalReplyScore,
     });
     setShowFeedbackPopup(true);
+    setIsGradingReply(false);
   };
 
   const getBadgeFromScore = (score) => {
@@ -198,6 +282,7 @@ function GamePage() {
           <VerdictWindow
             caseData={currentCase}
             onSubmit={handleInvestigationSubmit}
+            isSubmitting={isGradingReply}
           />
         </div>
       </main>
