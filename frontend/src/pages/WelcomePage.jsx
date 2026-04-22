@@ -18,21 +18,21 @@ function WelcomePage() {
       }}
       className="min-h-dvh px-5 py-6 sm:px-8 sm:py-8 text-[#1f2f63]"
     >
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between">
+      <header className="mx-auto flex w-full max-w-[98%] items-center justify-between">
         <img
           src={logo}
           alt="Inbox Inspector logo"
-          className="h-auto w-52 rounded-xl border border-[#4b5d7f] bg-white p-2 shadow-sm sm:w-72"
+          className="h-auto w-52 rounded-xl border border-[#4b5d7f] bg-white p-2 shadow-sm sm:w-85"
         />
         <button
           type="button"
-          className="text-base font-semibold tracking-tight text-[#2f3d6f] hover:underline"
+          className="text-2xl font-bold tracking-tight text-[#2f3d6f] hover:underline"
         >
           Terms
         </button>
       </header>
 
-      <main className="mx-auto mt-10 flex w-full max-w-4xl flex-col items-center text-center sm:mt-14">
+      <main className="mx-auto mt-10 flex w-full max-w-5xl flex-col items-center text-center sm:mt-14">
         <h1 className="text-4xl font-extrabold leading-tight tracking-tight sm:text-[46px]">
           Train your instincts.
           <br />
@@ -45,7 +45,7 @@ function WelcomePage() {
         </p>
 
         <section className="mt-8 w-full max-w-2xl rounded-2xl border border-[#6f7d95] bg-[#f5f7fb]/95 p-4 shadow-sm sm:p-6">
-          <p className="mb-3 text-lg font-semibold text-[#4d5a7b]">
+          <p className="mb-3 text-2xl font-semibold text-[#4d5a7b]">
             Your name (or nickname)
           </p>
           <input
@@ -61,11 +61,11 @@ function WelcomePage() {
           </button>
         </section>
 
-        <section className="mt-10 grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
-          <article className="rounded-xl border border-[#7c8596] bg-[#f8f9fc] p-4 text-left shadow-sm">
+        <section className="mt-10 grid w-full max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <article className="min-w-0 rounded-xl border border-[#7c8596] bg-[#f8f9fc] p-6 text-left shadow-sm">
             <p className="flex items-center gap-2 text-2xl font-semibold">
               <FaSearch className="text-[#58c7de]" />
-              <span>Scan clues</span>
+              <span className="whitespace-nowrap">Scan clues</span>
             </p>
             <ul className="mt-2 list-disc pl-5 text-xl text-[#324976]">
               <li>Check sender</li>
@@ -73,10 +73,10 @@ function WelcomePage() {
             </ul>
           </article>
 
-          <article className="rounded-xl border border-[#7c8596] bg-[#f8f9fc] p-4 text-left shadow-sm">
+          <article className="min-w-0 rounded-xl border border-[#7c8596] bg-[#f8f9fc] p-6 text-left shadow-sm">
             <p className="flex items-center gap-2 text-2xl font-semibold">
               <FaGavel className="text-[#9a6126]" />
-              <span>Choose verdict</span>
+              <span className="whitespace-nowrap">Choose verdict</span>
             </p>
             <ul className="mt-2 list-disc pl-5 text-xl text-[#324976]">
               <li>Pick Phishing or Legit</li>
@@ -84,10 +84,10 @@ function WelcomePage() {
             </ul>
           </article>
 
-          <article className="rounded-xl border border-[#7c8596] bg-[#f8f9fc] p-4 text-left shadow-sm">
+          <article className="min-w-0 rounded-xl border border-[#7c8596] bg-[#f8f9fc] p-6 text-left shadow-sm">
             <p className="flex items-center gap-2 text-2xl font-semibold">
               <FaRegCheckCircle className="text-[#58c7de]" />
-              <span>Write a safe reply</span>
+              <span className="whitespace-nowrap">Write a safe reply</span>
             </p>
             <ul className="mt-2 list-disc pl-5 text-xl text-[#324976]">
               <li>No password, ID, photos</li>
