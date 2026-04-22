@@ -24,9 +24,12 @@ const updatePlayer = async (playerId, data) => {
 }
 
 
-const getLeaderboard = async (limit = 4) => {
+const getLeaderboard = async ({ limit = 4, mode } = {}) => {
     const response = await axios.get(`${PLAYER_API_URL}/leaderboard`, {
-        params: { limit },
+        params: {
+            limit,
+            ...(mode ? { mode } : {}),
+        },
     });
     if (response.status === 200) {
         return response.data;

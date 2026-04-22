@@ -30,6 +30,23 @@ const playerSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    inboxInspectorTotalScore: {
+      type: Number,
+      default: 0,
+    },
+    inboxInspectorCorrectDecisions: {
+      type: Number,
+      default: 0,
+    },
+    inboxInspectorBadge: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    inboxInspectorCompletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true },
 );

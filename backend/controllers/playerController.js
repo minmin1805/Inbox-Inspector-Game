@@ -38,7 +38,16 @@ export const updatePlayer = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { score, correctDecisions, badge, completedAt } = req.body;
+    const {
+      score,
+      correctDecisions,
+      badge,
+      completedAt,
+      inboxInspectorTotalScore,
+      inboxInspectorCorrectDecisions,
+      inboxInspectorBadge,
+      inboxInspectorCompletedAt,
+    } = req.body;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid player ID' });
@@ -65,6 +74,28 @@ export const updatePlayer = async (req, res) => {
       }
     }
 
+    if (typeof inboxInspectorTotalScore === "number") {
+      updateData.inboxInspectorTotalScore = inboxInspectorTotalScore;
+    }
+
+    if (typeof inboxInspectorCorrectDecisions === "number") {
+      updateData.inboxInspectorCorrectDecisions = inboxInspectorCorrectDecisions;
+    }
+
+    if (
+      typeof inboxInspectorBadge === "string" &&
+      inboxInspectorBadge.trim() !== ""
+    ) {
+      updateData.inboxInspectorBadge = inboxInspectorBadge.trim();
+    }
+
+    if (inboxInspectorCompletedAt) {
+      const inboxCompletedDate = new Date(inboxInspectorCompletedAt);
+      if (!Number.isNaN(inboxCompletedDate.getTime())) {
+        updateData.inboxInspectorCompletedAt = inboxCompletedDate;
+      }
+    }
+
     // now we update the player by Mongo _id (matches id returned from createPlayer)
     const updatedPlayer = await Player.findByIdAndUpdate(
       id,
@@ -85,6 +116,10 @@ export const updatePlayer = async (req, res) => {
       correctDecisions: updatedPlayer.correctDecisions,
       badge: updatedPlayer.badge,
       completedAt: updatedPlayer.completedAt,
+      inboxInspectorTotalScore: updatedPlayer.inboxInspectorTotalScore,
+      inboxInspectorCorrectDecisions: updatedPlayer.inboxInspectorCorrectDecisions,
+      inboxInspectorBadge: updatedPlayer.inboxInspectorBadge,
+      inboxInspectorCompletedAt: updatedPlayer.inboxInspectorCompletedAt,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -92,20 +127,41 @@ export const updatePlayer = async (req, res) => {
 };
 
 export const getLeaderboard = async (req, res) => {
-    try {
-        
-        const limit = Math.min(parseInt(req.query.limit) || 4, 20);
+  try {
+    const limit = Math.min(parseInt(req.query.limit) || 4, 20);
+    const mode = String(req.query.mode || "").trim().toLowerCase();
 
-        const foundPlayers = await Player.find({
-            completedAt: {$ne: null}
-        })
-        .sort({score: -1})
+    if (mode === "inbox-inspector") {
+      const inboxPlayers = await Player.find({
+        inboxInspectorCompletedAt: { $ne: null },
+      })
+        .sort({ inboxInspectorTotalScore: -1 })
         .limit(limit)
-        .select('name score completedAt badge')
+        .select(
+          "name inboxInspectorTotalScore inboxInspectorCompletedAt inboxInspectorBadge"
+        )
         .lean();
 
-        res.status(200).json({players: foundPlayers});
-    } catch (error) {
-        return res.status(500).json({error: error.message});
+      const players = inboxPlayers.map((p) => ({
+        name: p.name,
+        score: p.inboxInspectorTotalScore ?? 0,
+        completedAt: p.inboxInspectorCompletedAt ?? null,
+        badge: p.inboxInspectorBadge ?? "",
+      }));
+
+      return res.status(200).json({ players });
     }
-}
+
+    const foundPlayers = await Player.find({
+      completedAt: { $ne: null },
+    })
+      .sort({ score: -1 })
+      .limit(limit)
+      .select("name score completedAt badge")
+      .lean();
+
+    return res.status(200).json({ players: foundPlayers });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
