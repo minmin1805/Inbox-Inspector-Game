@@ -98,7 +98,7 @@ function EmailWindow({ caseData }) {
                     <img
                       src={pdfImage}
                       alt=""
-                      className="h-11 w-11 object-contain xl:h-12 xl:w-12"
+                      className="h-11 w-11  xl:h-20 xl:w-20"
                     />
                     <div className="min-w-0">
                       <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">

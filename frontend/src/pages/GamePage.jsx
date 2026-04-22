@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import DMWindow from "../components/DMWindow";
@@ -7,6 +7,7 @@ import InvestigationToolsBar from "../components/InvestigationToolsBar";
 import VerdictWindow from "../components/VerdictWindow";
 import FeedbackPopup from "../components/FeedbackPopup";
 import levels from "../data/inboxInspectorLevels.json";
+import { updatePlayer } from "../services/playerService";
 
 function GamePage() {
   const navigate = useNavigate();
@@ -18,7 +19,10 @@ function GamePage() {
   const [gameStats, setGameStats] = useState({
     totalScore: 0,
     correctVerdicts: 0,
+    totalReplyScore: 0,
   });
+  const [player, setPlayer] = useState(null);
+  const [isFinalizing, setIsFinalizing] = useState(false);
 
   const currentCase = useMemo(
     () => cases[caseIndex] ?? cases[0],
@@ -27,6 +31,20 @@ function GamePage() {
   const totalCases = cases.length;
   const isEmail = currentCase?.channel === "email";
   const isLastCase = caseIndex === totalCases - 1;
+
+  useEffect(() => {
+    const playerRaw = sessionStorage.getItem("inboxInspectorPlayer");
+    if (!playerRaw) {
+      navigate("/welcome", { replace: true });
+      return;
+    }
+
+    try {
+      setPlayer(JSON.parse(playerRaw));
+    } catch {
+      navigate("/welcome", { replace: true });
+    }
+  }, [navigate]);
 
   const scoreReply = (replyText) => {
     const text = String(replyText || "").toLowerCase();
@@ -51,10 +69,12 @@ function GamePage() {
     const caseTotal = Math.min(1000, verdictScore + scanScore + replyScore);
     const nextTotalScore = gameStats.totalScore + caseTotal;
     const nextCorrectVerdicts = gameStats.correctVerdicts + (verdictCorrect ? 1 : 0);
+    const nextTotalReplyScore = gameStats.totalReplyScore + replyScore;
 
     setGameStats({
       totalScore: nextTotalScore,
       correctVerdicts: nextCorrectVerdicts,
+      totalReplyScore: nextTotalReplyScore,
     });
 
     setFeedbackData({
@@ -66,22 +86,79 @@ function GamePage() {
       tip: currentCase?.coachTip || "If unsure, verify through an official channel.",
       nextTotalScore,
       nextCorrectVerdicts,
+      nextTotalReplyScore,
     });
     setShowFeedbackPopup(true);
   };
 
-  const handleFeedbackClose = () => {
+  const getBadgeFromScore = (score) => {
+    if (score >= 8500) {
+      return {
+        title: "Phish Shield Pro",
+        blurb: "Strong evidence-based decisions",
+      };
+    }
+    if (score >= 6500) {
+      return {
+        title: "Phish Shield Plus",
+        blurb: "Solid instincts with room to improve",
+      };
+    }
+    return {
+      title: "Phish Shield Starter",
+      blurb: "Good effort — keep practicing your checks",
+    };
+  };
+
+  const finalizeRunAndGoEndgame = async () => {
+    if (!feedbackData) return;
+    const finalScore = feedbackData.nextTotalScore;
+    const finalCorrect = feedbackData.nextCorrectVerdicts;
+    const replySafetyPercent = Math.round(
+      (feedbackData.nextTotalReplyScore / (totalCases * 200)) * 100
+    );
+    const badge = getBadgeFromScore(finalScore);
+
+    const resultState = {
+      totalScore: finalScore,
+      correctVerdicts: finalCorrect,
+      totalCases,
+      replySafetyPercent,
+      badgeTitle: badge.title,
+      badgeBlurb: badge.blurb,
+      playerName: player?.name || "Player",
+    };
+
+    sessionStorage.setItem(
+      "inboxInspectorLastResult",
+      JSON.stringify(resultState)
+    );
+
+    if (player?.id) {
+      try {
+        await updatePlayer(player.id, {
+          inboxInspectorTotalScore: finalScore,
+          inboxInspectorCorrectDecisions: finalCorrect,
+          inboxInspectorBadge: badge.title,
+          inboxInspectorCompletedAt: new Date().toISOString(),
+        });
+      } catch (error) {
+        console.error("Failed to persist inbox inspector results:", error);
+      }
+    }
+
+    navigate("/endgame", { state: resultState });
+  };
+
+  const handleFeedbackClose = async () => {
+    if (isFinalizing) return;
     setShowFeedbackPopup(false);
     setRevealedTools([]);
 
     if (isLastCase) {
-      navigate("/endgame", {
-        state: {
-          totalScore: feedbackData.nextTotalScore,
-          correctVerdicts: feedbackData.nextCorrectVerdicts,
-          totalCases,
-        },
-      });
+      setIsFinalizing(true);
+      await finalizeRunAndGoEndgame();
+      setIsFinalizing(false);
       return;
     }
     setCaseIndex((prev) => prev + 1);
@@ -89,34 +166,14 @@ function GamePage() {
 
   return (
     <div className="relative flex min-h-dvh flex-col bg-cyan-50 text-slate-900">
-      <Header caseNumber={currentCase.caseNumber} totalCases={totalCases} />
+      <Header
+        caseNumber={currentCase.caseNumber}
+        totalCases={totalCases}
+        currentScore={gameStats.totalScore}
+        playerName={player?.name}
+      />
 
       <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:gap-10 xl:px-10 2xl:px-14">
-        {/* Dev-only: does not affect main layout (reference image 2) */}
-        {import.meta.env.DEV && (
-          <div
-            className="fixed bottom-3 right-3 z-50 flex flex-wrap items-center gap-1.5 rounded-lg border border-slate-200 bg-white/95 px-2 py-1.5 text-xs shadow-md"
-            role="region"
-            aria-label="Developer preview"
-          >
-            <span className="text-slate-500">Preview</span>
-            <button
-              type="button"
-              onClick={() => setCaseIndex(0)}
-              className="rounded bg-slate-100 px-2 py-0.5 font-medium hover:bg-slate-200"
-            >
-              Case 1 DM
-            </button>
-            <button
-              type="button"
-              onClick={() => setCaseIndex(3)}
-              className="rounded bg-slate-100 px-2 py-0.5 font-medium hover:bg-slate-200"
-            >
-              Case 4 email
-            </button>
-          </div>
-        )}
-
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-12 xl:gap-14 2xl:gap-16">
           <div className="min-w-0 lg:col-span-7">
             {isEmail ? (

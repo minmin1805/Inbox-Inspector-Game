@@ -1,7 +1,15 @@
 import React from "react";
 import mockBadge from "../assets/Image/EndgamePage/mockBadge.png";
 
-function ScoreDisplay() {
+function ScoreDisplay({
+  totalScore = 0,
+  maxScore = 10000,
+  badgeTitle = "Phish Shield Starter",
+  badgeBlurb = "Good effort — keep practicing your checks",
+  correctVerdicts = 0,
+  totalCases = 10,
+  replySafetyPercent = 0,
+}) {
   return (
     <section className="w-full max-w-[700px] self-start rounded-3xl border border-slate-600/70 bg-[#f7f8fb] p-5 shadow-sm sm:p-6 lg:mt-12">
       <h2 className="text-2xl font-extrabold tracking-tight text-[#25356f] sm:text-4xl">
@@ -16,20 +24,25 @@ function ScoreDisplay() {
         />
         <div className="min-w-0">
           <p className="text-3xl font-extrabold leading-none text-[#22316a] sm:text-4xl">
-            8920 <span className="text-2xl font-medium sm:text-3xl">out of 10000</span>
+            {totalScore}{" "}
+            <span className="text-2xl font-medium sm:text-3xl">
+              out of {maxScore}
+            </span>
           </p>
           <p className="mt-1 text-2xl font-extrabold text-[#25356f] sm:text-3xl">
-            Phish Shield Pro
+            {badgeTitle}
           </p>
           <p className="mt-0.5 text-base text-slate-700 sm:text-lg">
-            Strong evidence - biased decisions
+            {badgeBlurb}
           </p>
         </div>
       </div>
 
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-lg text-slate-800 sm:text-2xl">
-        <p>Correct verdicts: 9/10</p>
-        <p>Reply safety score 88%</p>
+        <p>
+          Correct verdicts: {correctVerdicts}/{totalCases}
+        </p>
+        <p>Reply safety score {replySafetyPercent}%</p>
       </div>
     </section>
   );

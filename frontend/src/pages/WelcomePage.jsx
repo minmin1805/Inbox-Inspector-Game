@@ -1,14 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../assets/Image/WelcomePage/logo.png";
 import { useNavigate } from "react-router-dom";
 import { FaSearch, FaGavel, FaRegCheckCircle } from "react-icons/fa";
+import { createPlayer } from "../services/playerService";
 const NEONBLUE = "#ccffff";
 
 function WelcomePage() {
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
 
-  const handleStartInvestigation = () => {
-    navigate("/instruction");
+  const handleStartInvestigation = async () => {
+    const trimmedName = username.trim();
+    if (!trimmedName) {
+      setError("Please enter your name or nickname first.");
+      return;
+    }
+
+    try {
+      setIsCreating(true);
+      setError("");
+      const player = await createPlayer(trimmedName);
+      sessionStorage.setItem("inboxInspectorPlayer", JSON.stringify(player));
+      navigate("/instruction");
+    } catch (err) {
+      setError(err?.message || "Could not start your session. Try again.");
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   return (
@@ -51,13 +71,19 @@ function WelcomePage() {
           <input
             type="text"
             placeholder="Type your name here...."
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="w-full rounded-xl border border-[#7f89a0] bg-white px-4 py-3 text-base text-[#243663] outline-none transition focus:border-[#41bdd9] focus:ring-2 focus:ring-[#7bd8eb]/40"
           />
+          {error ? (
+            <p className="mt-2 text-sm font-medium text-rose-700">{error}</p>
+          ) : null}
           <button
             onClick={handleStartInvestigation}
+            disabled={isCreating}
             className="mt-4 rounded-xl border border-[#3ea8c2] bg-[#59cce4] px-7 py-2.5 text-2xl font-bold text-white shadow-sm transition hover:bg-[#42bcd7]"
           >
-            Start Investigation
+            {isCreating ? "Starting..." : "Start Investigation"}
           </button>
         </section>
 

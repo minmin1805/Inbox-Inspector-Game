@@ -1,10 +1,32 @@
 import React from "react";
 import { IoMdDownload } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/Image/WelcomePage/logo.png";
 import ScoreDisplay from "../components/ScoreDisplay";
 import Leaderboard from "../components/Leaderboard";
 
 function EndgamePage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const fallbackRaw = sessionStorage.getItem("inboxInspectorLastResult");
+  const fallback = fallbackRaw ? JSON.parse(fallbackRaw) : null;
+  const result = location.state || fallback || {};
+
+  const totalScore = Number(result.totalScore || 0);
+  const correctVerdicts = Number(result.correctVerdicts || 0);
+  const totalCases = Number(result.totalCases || 10);
+  const replySafetyPercent = Number(result.replySafetyPercent || 0);
+  const badgeTitle = result.badgeTitle || "Phish Shield Starter";
+  const badgeBlurb =
+    result.badgeBlurb || "Good effort — keep practicing your checks";
+
+  const handleExit = () => {
+    sessionStorage.removeItem("inboxInspectorLastResult");
+    sessionStorage.removeItem("inboxInspectorPlayer");
+    navigate("/welcome");
+  };
+
   return (
     <div className="min-h-dvh w-full bg-[#ccffff] px-4 py-4 sm:px-7 sm:py-6">
       <div className="mx-auto flex w-full max-w-[1600px] flex-col items-center">
@@ -26,7 +48,15 @@ function EndgamePage() {
         </div>
 
         <div className="mt-5 grid w-full grid-cols-1 items-start gap-5 lg:grid-cols-2 lg:gap-6">
-          <ScoreDisplay />
+          <ScoreDisplay
+            totalScore={totalScore}
+            maxScore={10000}
+            badgeTitle={badgeTitle}
+            badgeBlurb={badgeBlurb}
+            correctVerdicts={correctVerdicts}
+            totalCases={totalCases}
+            replySafetyPercent={replySafetyPercent}
+          />
           <Leaderboard />
         </div>
 
@@ -63,6 +93,7 @@ function EndgamePage() {
           </button>
           <button
             type="button"
+            onClick={handleExit}
             className="rounded-full bg-[#20d4d8] px-6 py-2.5 text-xl font-bold text-[#21326e] shadow-sm hover:bg-[#11c3c8] sm:text-2xl"
           >
             Exit To Menu

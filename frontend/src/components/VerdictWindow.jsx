@@ -58,7 +58,7 @@ function VerdictWindow({ caseData, onSubmit }) {
                 src={v.icon}
                 alt=""
                 className={[
-                  "h-12 w-12 object-contain",
+                  "h-15 w-15",
                   isSelected ? "drop-shadow" : "opacity-90",
                 ].join(" ")}
               />
