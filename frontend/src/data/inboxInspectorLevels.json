@@ -1,0 +1,362 @@
+{
+  "$schemaNotes": "Inbox Inspector — 10 cases. UI chrome stays clean; weirdText applies to message body only. Graphics keys drive which assets to show.",
+  "gameId": "inbox-inspector",
+  "version": "1.1.0",
+  "assetKeys": {
+    "giftIcon": "graphics/gift-reward.png",
+    "clickHereButton": "graphics/cta-click-here.png",
+    "pdfLegit": "graphics/pdf-work-contract-legit.png",
+    "pdfSuspicious": "graphics/pdf-suspicious-filename.png",
+    "tripPhoto": "graphics/trip-photo-friends.png",
+    "baitPhotoRecruiting": "graphics/bait-photo-fake-team.png"
+  },
+  "photoUsageNote": "tripPhoto = legit friend share (Case 9). baitPhotoRecruiting = fake credibility image in a phishing DM (Case 7)—not proof the job is real.",
+  "cases": [
+    {
+      "id": "case-01",
+      "caseNumber": 1,
+      "channel": "dm",
+      "theme": "prize_scam",
+      "correctVerdict": "phishing",
+      "graphics": {
+        "giftIconBottomRight": true,
+        "clickHereStyleButton": true,
+        "pdfAttachment": null,
+        "tripPhotoAttachment": false
+      },
+      "sender": {
+        "displayName": "Fast Prize Center",
+        "handle": "@fast_prize_team",
+        "avatarKey": "avatar-generic-question"
+      },
+      "message": {
+        "weirdText": true,
+        "headline": "YOU WON a suprise reword!!",
+        "body": "Cla im in 10 minutess or it EXPIRES!!! Tap the big button and conmfirm your acount now 🎉🎉🎉",
+        "primaryCta": { "type": "click_here_button", "label": "CLICK HERE" },
+        "linkShown": "claim-reward-now.win",
+        "tags": ["Prize", "Urgent"]
+      },
+      "toolFindings": {
+        "senderCheck": "Handle not verified; account looks new.",
+        "linkPreview": "Shown destination does not match a trusted brand.",
+        "urgencyDetector": "Pressure words: '10 minutes', 'expires'.",
+        "askDetector": "Asks you to confirm account details.",
+        "attachmentQrCheck": "No attachment in this DM."
+      },
+      "starterReply": "I won't use links or buttons from messages. I'll verify in the official app.",
+      "coachTip": "Prize scams often pair urgency with fake reward graphics—slow down and verify out of band."
+    },
+    {
+      "id": "case-02",
+      "caseNumber": 2,
+      "channel": "email",
+      "theme": "school_security_legit",
+      "correctVerdict": "legit",
+      "graphics": {
+        "giftIconBottomRight": false,
+        "clickHereStyleButton": false,
+        "pdfAttachment": { "variant": "legit", "displayFileName": "Student_Login_Guide.pdf", "previewLabel": "Official guide (safe filename)" },
+        "tripPhotoAttachment": false
+      },
+      "sender": {
+        "displayName": "Riverside High Portal",
+        "fromAddress": "noreply@riversidehs.edu",
+        "toPlaceholder": "you@student.edu"
+      },
+      "message": {
+        "weirdText": false,
+        "subject": "Routine security reminder",
+        "body": "Hi,\n\nThis is a routine reminder from your school portal. Please open the official school app directly to review recent login activity.\n\nDo not reply with passwords or one-time codes.\n\nA short reference PDF is attached for how to enable two-step verification.",
+        "primaryCta": { "type": "open_official_app", "label": "Open in School App" },
+        "tags": ["School", "Security"]
+      },
+      "toolFindings": {
+        "senderCheck": "Domain matches expected school email format.",
+        "linkPreview": "No sketchy payment link; directs to official app.",
+        "urgencyDetector": "No panic language; informational tone.",
+        "askDetector": "Does not ask for passwords/codes in email.",
+        "attachmentQrCheck": "PDF filename looks normal and matches a help document."
+      },
+      "starterReply": "Thanks — I'll check login activity in the official school app.",
+      "coachTip": "Legit school notices usually push you to an official app and never ask for codes by email."
+    },
+    {
+      "id": "case-03",
+      "caseNumber": 3,
+      "channel": "dm",
+      "theme": "account_takeover_otp",
+      "correctVerdict": "phishing",
+      "graphics": {
+        "giftIconBottomRight": false,
+        "clickHereStyleButton": false,
+        "pdfAttachment": null,
+        "tripPhotoAttachment": false
+      },
+      "sender": {
+        "displayName": "Maya (maybe)",
+        "handle": "@maya_backup_22",
+        "avatarKey": "avatar-generic-question"
+      },
+      "message": {
+        "weirdText": true,
+        "headline": "",
+        "body": "heyy its mee maya… lost my phone rn 😭\n\ni sent a c0de to ur # by mistake pls send it FAST before it expiresssss",
+        "primaryCta": null,
+        "tags": ["Backup account", "Urgent"]
+      },
+      "toolFindings": {
+        "senderCheck": "Backup account is new with little history.",
+        "linkPreview": "No link; risk is the code request itself.",
+        "urgencyDetector": "Repeated pressure: 'FAST', 'expires'.",
+        "askDetector": "Requests your one-time verification code.",
+        "attachmentQrCheck": "No attachment."
+      },
+      "starterReply": "I can't share codes. I'll verify with you through your main account or in person.",
+      "coachTip": "Never share OTP codes—codes are keys to your account."
+    },
+    {
+      "id": "case-04",
+      "caseNumber": 4,
+      "channel": "email",
+      "theme": "labor_job_scam",
+      "correctVerdict": "phishing",
+      "graphics": {
+        "giftIconBottomRight": false,
+        "clickHereStyleButton": false,
+        "pdfAttachment": { "variant": "suspicious", "displayFileName": "contract_p27hd8omlj4z3.pdf", "previewLabel": "Random-looking filename" },
+        "tripPhotoAttachment": false
+      },
+      "sender": {
+        "displayName": "Summer Jobs Hiring",
+        "fromAddress": "jobs@summerwork-hire.net",
+        "toPlaceholder": "you@email.com"
+      },
+      "message": {
+        "weirdText": true,
+        "subject": "URGENT: Confirm your spot — pay training fee today",
+        "body": "Congratulati0ns!!! Your seleected for paid training 🤑\n\nTo reserve your seat: pay $120 training fee within 2 hourssss\n\nOpen the attatched \"contract\" and click PAY NOW\n\nSend photo of ID for verificashun.",
+        "primaryCta": { "type": "pay_button", "label": "PAY NOW" },
+        "tags": ["Fee", "Urgent"]
+      },
+      "toolFindings": {
+        "senderCheck": "Sender domain is hard to tie to a real employer.",
+        "linkPreview": "Payment destination does not match a known payroll system.",
+        "urgencyDetector": "Short deadline and panic timing.",
+        "askDetector": "Upfront fee + ID photo request.",
+        "attachmentQrCheck": "Attachment filename looks random/gibberish—high risk."
+      },
+      "starterReply": "I won't pay fees or send ID by email. I'll verify this employer through official channels.",
+      "coachTip": "Upfront fees plus random contract filenames are common job-scam patterns."
+    },
+    {
+      "id": "case-05",
+      "caseNumber": 5,
+      "channel": "dm",
+      "theme": "community_job_legit",
+      "correctVerdict": "legit",
+      "graphics": {
+        "giftIconBottomRight": false,
+        "clickHereStyleButton": false,
+        "pdfAttachment": { "variant": "legit", "displayFileName": "Interview_Info.pdf", "previewLabel": "Interview details" },
+        "tripPhotoAttachment": false
+      },
+      "sender": {
+        "displayName": "Mia — Riverside Community Center",
+        "handle": "@riverside_cc_staff",
+        "avatarKey": "avatar-org-verified"
+      },
+      "message": {
+        "weirdText": false,
+        "body": "Hi Alex,\n\nThanks for applying for the weekend assistant role.\n\nPlease confirm your interview time using the link on our public website (Programs → Jobs). No payment is required.\n\nI've attached a one-page info sheet with what to bring.",
+        "primaryCta": null,
+        "tags": ["Interview", "Community"]
+      },
+      "toolFindings": {
+        "senderCheck": "Organization identity is consistent and verifiable publicly.",
+        "linkPreview": "Directs to official site path—not a random pay portal.",
+        "urgencyDetector": "No pressure to pay or send secrets.",
+        "askDetector": "No request for passwords, codes, or ID photos in DM.",
+        "attachmentQrCheck": "PDF name is readable and matches an info sheet."
+      },
+      "starterReply": "Thank you — I'll confirm through your official website.",
+      "coachTip": "Real hiring follow-ups can include documents—but fees and ID photos are red flags when rushed."
+    },
+    {
+      "id": "case-06",
+      "caseNumber": 6,
+      "channel": "email",
+      "theme": "delivery_sketchy",
+      "correctVerdict": "sketchy_verify",
+      "graphics": {
+        "giftIconBottomRight": false,
+        "clickHereStyleButton": false,
+        "pdfAttachment": { "variant": "suspicious", "displayFileName": "shipping_invoice_x9qk2.pdf", "previewLabel": "Unfamiliar invoice name" },
+        "tripPhotoAttachment": false
+      },
+      "sender": {
+        "displayName": "Parcel Updates",
+        "fromAddress": "notify@parcel-track-mail.com",
+        "toPlaceholder": "you@email.com"
+      },
+      "message": {
+        "weirdText": false,
+        "subject": "Delivery issue: confirm details",
+        "body": "Your package is delayed. Confirm your address in the portal to reschedule delivery.\n\nSee attached for details.",
+        "primaryCta": { "type": "link_text", "label": "Open portal" },
+        "tags": ["Shipping", "Action needed"]
+      },
+      "toolFindings": {
+        "senderCheck": "Sender is generic and may not match your real carrier account.",
+        "linkPreview": "Portal domain may not match known carrier domains.",
+        "urgencyDetector": "Mild pressure to act soon.",
+        "askDetector": "Asks for address confirmation through an external flow.",
+        "attachmentQrCheck": "Attachment name looks odd—verify before opening."
+      },
+      "starterReply": "I won't use this email link. I'll check tracking in the carrier app I already use.",
+      "coachTip": "If unsure, verify delivery status through the official carrier app or website you trust."
+    },
+    {
+      "id": "case-07",
+      "caseNumber": 7,
+      "channel": "dm",
+      "theme": "travel_job_deposit",
+      "correctVerdict": "phishing",
+      "graphics": {
+        "giftIconBottomRight": false,
+        "clickHereStyleButton": true,
+        "pdfAttachment": null,
+        "tripPhotoAttachment": false,
+        "baitPhotoAttachment": true,
+        "baitPhotoAssetKey": "baitPhotoRecruiting",
+        "baitPhotoCaption": "Preview: your event team + housing (keep private)"
+      },
+      "sender": {
+        "displayName": "Elite Events Jobs",
+        "handle": "@eliteevents_hiring",
+        "avatarKey": "avatar-generic-question"
+      },
+      "message": {
+        "weirdText": true,
+        "body": "Your PERFECT for our event staff role!!! 🤑\n\nWe book travel + housing. Send ID photo NOW + $50 deposit\n\nKEEP PRIVATE ok??\n\nSee the pic below — that's the team + place. Still not sure?? Use button ⬇️⬇️",
+        "primaryCta": { "type": "click_here_button", "label": "CLICK HERE" },
+        "tags": ["Deposit", "Urgent", "Photo bait"]
+      },
+      "toolFindings": {
+        "senderCheck": "Recruiter identity is hard to verify.",
+        "linkPreview": "Payment destination looks unrelated to payroll.",
+        "urgencyDetector": "Secrecy + immediate payment.",
+        "askDetector": "ID image + money before formal hiring steps.",
+        "attachmentQrCheck": "The promo-style photo doesn't prove the employer is real—images can be stock or stolen. Risk is still payment + ID + secrecy."
+      },
+      "starterReply": "I won't send money or ID in DMs. I'll verify this role through official channels with a trusted adult.",
+      "coachTip": "Money + ID + secrecy is a high-risk recruiting pattern."
+    },
+    {
+      "id": "case-08",
+      "caseNumber": 8,
+      "channel": "email",
+      "theme": "contest_verify_first",
+      "correctVerdict": "sketchy_verify",
+      "graphics": {
+        "giftIconBottomRight": false,
+        "clickHereStyleButton": false,
+        "pdfAttachment": null,
+        "tripPhotoAttachment": false
+      },
+      "sender": {
+        "displayName": "Community Arts Club",
+        "fromAddress": "contests-notify@communityartsclub.org",
+        "toPlaceholder": "you@email.com"
+      },
+      "message": {
+        "weirdText": false,
+        "subject": "Final reminder: submit your art entry",
+        "body": "Hi — our records show you were nominated for this semester’s youth art showcase (if that doesn’t sound right, contact us).\n\nEntries close tonight at 11:59 PM.\n\nPlease submit through the link below. Do not reply to this email with attachments.\n\nIf you didn’t expect this message, ignore it — but we still recommend checking the official contest page on our website before the deadline.",
+        "primaryCta": {
+          "type": "link_text",
+          "label": "Submit Entry Form",
+          "displayUrl": "communityartsclub.org/Arts/Contests",
+          "actualUrl": "https://ctzn.io/artshow-2026"
+        },
+        "tags": ["Deadline", "Contest", "First-time sender"]
+      },
+      "toolFindings": {
+        "senderCheck": "Address uses a contests-specific prefix you haven’t seen before from this org — verify it’s real before acting.",
+        "linkPreview": "The button text looks like the club website, but the real link is a short URL (ctzn.io) — you can’t tell the final destination without expanding it. Verify by opening the contest page yourself in the browser.",
+        "urgencyDetector": "Deadline tonight creates time pressure — still not proof the email is authentic.",
+        "askDetector": "No passwords or payments, but it does ask you to submit personal work through a link you haven’t confirmed.",
+        "attachmentQrCheck": "No attachment — the risk is the unverified submission link."
+      },
+      "starterReply": "I won't use the email link. I'll open the club's website myself and find Arts → Contests to submit or confirm.",
+      "coachTip": "Plausible contests can still be wrong: short links and first-time sender addresses mean verify on the official site you navigate to yourself — not the link in the email."
+    },
+    {
+      "id": "case-09",
+      "caseNumber": 9,
+      "channel": "dm",
+      "theme": "friend_trip_photo_legit",
+      "correctVerdict": "legit",
+      "graphics": {
+        "giftIconBottomRight": false,
+        "clickHereStyleButton": false,
+        "pdfAttachment": null,
+        "tripPhotoAttachment": true
+      },
+      "sender": {
+        "displayName": "Jordan",
+        "handle": "@jordan.k",
+        "avatarKey": "avatar-friend"
+      },
+      "message": {
+        "weirdText": false,
+        "body": "okay this one from the lake trip is too funny 😂\n\nsending the rest in our group album tonight — here's a preview",
+        "primaryCta": null,
+        "tags": ["Friends", "Photo"]
+      },
+      "toolFindings": {
+        "senderCheck": "Matches a known friend account you recognize.",
+        "linkPreview": "No suspicious link required to view the message context.",
+        "urgencyDetector": "No financial pressure or secrecy demands.",
+        "askDetector": "No request for codes, money, or ID.",
+        "attachmentQrCheck": "Photo preview is consistent with a normal friend share (still: don't forward private photos)."
+      },
+      "starterReply": "Haha love it — thanks for sharing!",
+      "coachTip": "Friendly shares can be legit—compare sender identity and keep personal photos private."
+    },
+    {
+      "id": "case-10",
+      "caseNumber": 10,
+      "channel": "email",
+      "theme": "manager_gift_card_scam",
+      "correctVerdict": "phishing",
+      "graphics": {
+        "giftIconBottomRight": false,
+        "clickHereStyleButton": false,
+        "pdfAttachment": { "variant": "suspicious", "displayFileName": "event-list.pdf", "previewLabel": "Generic attachment" },
+        "tripPhotoAttachment": false
+      },
+      "sender": {
+        "displayName": "Alex Morgan — Store Manager",
+        "fromAddress": "alex.morgan@shop-team-mail.com",
+        "toPlaceholder": "you@email.com"
+      },
+      "message": {
+        "weirdText": true,
+        "subject": "URGENT: Team surprise today — need your help now",
+        "body": "I'm in meetings and can't call. Buy 6 × $100 gift cards for raffle prizes and EMAIL ME THE CODES IMMEDIATELY.\n\nKeep this BETWEEN US so it's a surprise.\n\n(attached is the \"list\")",
+        "primaryCta": null,
+        "tags": ["Urgent", "Gift cards"]
+      },
+      "toolFindings": {
+        "senderCheck": "Email domain does not match your real workplace domain.",
+        "linkPreview": "No legitimate payroll link—request is the scam.",
+        "urgencyDetector": "Immediate action + secrecy.",
+        "askDetector": "Gift card codes by email—classic impersonation pattern.",
+        "attachmentQrCheck": "Attachment doesn't prove legitimacy; verify in person or official work channel."
+      },
+      "starterReply": "I can't buy gift cards or send codes by email. I'll verify this with my supervisor through official work contact.",
+      "coachTip": "Boss scams use urgency + secrecy + gift cards—verify through real workplace channels."
+    }
+  ]
+}
