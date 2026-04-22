@@ -67,7 +67,7 @@
       "message": {
         "weirdText": false,
         "subject": "Routine security reminder",
-        "body": "Hi,\n\nThis is a routine reminder from your school portal. Please open the official school app directly to review recent login activity.\n\nDo not reply with passwords or one-time codes.\n\nA short reference PDF is attached for how to enable two-step verification.",
+        "body": "Hi,\n\nThis is a routine reminder from your school portal. Please open the official school app directly to review recent login activity.\n\nIf you notice a device you do not recognize, sign out of other sessions in the app settings.\n\nDo not reply with passwords or one-time codes.\n\nA short reference PDF is attached for how to enable two-step verification.",
         "primaryCta": { "type": "open_official_app", "label": "Open in School App" },
         "tags": ["School", "Security"]
       },
@@ -135,7 +135,7 @@
       "message": {
         "weirdText": true,
         "subject": "URGENT: Confirm your spot — pay training fee today",
-        "body": "Congratulati0ns!!! Your seleected for paid training 🤑\n\nTo reserve your seat: pay $120 training fee within 2 hourssss\n\nOpen the attatched \"contract\" and click PAY NOW\n\nSend photo of ID for verificashun.",
+        "body": "Congratulati0ns!!! Your seleected for paid training 🤑\n\nTo reserve your seat: pay $120 training fee within 2 hourssss\n\nOpen the attatched \"contract\" and click PAY NOW\n\nAfter payment, send your receipt screenshot for fast approval.\n\nSend photo of ID for verificashun.",
         "primaryCta": { "type": "pay_button", "label": "PAY NOW" },
         "tags": ["Fee", "Urgent"]
       },
@@ -202,7 +202,7 @@
       "message": {
         "weirdText": false,
         "subject": "Delivery issue: confirm details",
-        "body": "Your package is delayed. Confirm your address in the portal to reschedule delivery.\n\nSee attached for details.",
+        "body": "Your package is delayed. Confirm your address in the portal to reschedule delivery.\n\nA correction fee may apply if details are incomplete.\n\nSee attached for details.",
         "primaryCta": { "type": "link_text", "label": "Open portal" },
         "tags": ["Shipping", "Action needed"]
       },
@@ -272,7 +272,7 @@
       "message": {
         "weirdText": false,
         "subject": "Final reminder: submit your art entry",
-        "body": "Hi — our records show you were nominated for this semester’s youth art showcase (if that doesn’t sound right, contact us).\n\nEntries close tonight at 11:59 PM.\n\nPlease submit through the link below. Do not reply to this email with attachments.\n\nIf you didn’t expect this message, ignore it — but we still recommend checking the official contest page on our website before the deadline.",
+        "body": "Hi — our records show you were nominated for this semester’s youth art showcase (if that doesn’t sound right, contact us).\n\nEntries close tonight at 11:59 PM.\n\nPlease submit through the link below. Do not reply to this email with attachments.\n\nYou can also review rules, eligibility, and judging criteria from the official contest page.\n\nIf you didn’t expect this message, ignore it — but we still recommend checking the official contest page on our website before the deadline.",
         "primaryCta": {
           "type": "link_text",
           "label": "Submit Entry Form",
@@ -344,7 +344,7 @@
       "message": {
         "weirdText": true,
         "subject": "URGENT: Team surprise today — need your help now",
-        "body": "I'm in meetings and can't call. Buy 6 × $100 gift cards for raffle prizes and EMAIL ME THE CODES IMMEDIATELY.\n\nKeep this BETWEEN US so it's a surprise.\n\n(attached is the \"list\")",
+        "body": "I'm in meetings and can't call. Buy 6 × $100 gift cards for raffle prizes and EMAIL ME THE CODES IMMEDIATELY.\n\nUse your own card first and submit for reimbursement at close.\n\nKeep this BETWEEN US so it's a surprise.\n\n(attached is the \"list\")",
         "primaryCta": null,
         "tags": ["Urgent", "Gift cards"]
       },
