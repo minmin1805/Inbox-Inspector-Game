@@ -28,8 +28,8 @@ function VerdictWindow({ caseData, onSubmit }) {
   };
 
   return (
-    <div className="w-full rounded-2xl border border-amber-200/90 bg-amber-50/60 p-4 shadow-sm sm:p-6">
-      <h2 className="mb-4 text-center text-lg font-extrabold text-slate-800 sm:text-xl">
+    <div className="w-full rounded-2xl border border-amber-200/90 bg-[#fef9ef] p-4 shadow-sm sm:p-6">
+      <h2 className="mb-4 text-center text-2xl font-extrabold text-slate-800 sm:text-3xl">
         Your verdict
       </h2>
 

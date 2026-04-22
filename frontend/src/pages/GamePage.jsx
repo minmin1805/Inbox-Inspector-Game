@@ -49,7 +49,7 @@ function GamePage() {
         )}
 
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-12 xl:gap-14 2xl:gap-16">
-          <div className="min-w-0 lg:col-span-7 mt-30">
+          <div className="min-w-0 lg:col-span-7 lg:mt-40">
             {isEmail ? (
               <EmailWindow caseData={currentCase} />
             ) : (
