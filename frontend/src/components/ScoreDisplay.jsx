@@ -1,65 +1,38 @@
-import React from 'react'
-import mockBadge from '../assets/Image/EndgamePage/mockBadge.png'
+import React from "react";
+import mockBadge from "../assets/Image/EndgamePage/mockBadge.png";
 
-const BADGE_BY_ID = {
-    mock: mockBadge,
-}
-
-function ScoreDisplay({
-  title = 'Mock Title',
-  blurb,
-  totalScore = 0,
-  badgeId = 'mock',
-  scenariosCleared,
-  scenariosTotal = 10,
-}) {
-  const scoreLabel = typeof totalScore === 'number' ? totalScore.toLocaleString() : String(totalScore)
-  const scenariosLine =
-    scenariosCleared != null && scenariosTotal != null
-      ? `${scenariosCleared}/${scenariosTotal} scenarios cleared`
-      : null
-
-  const badgeSrc = BADGE_BY_ID[badgeId] ?? mockBadge
-
+function ScoreDisplay() {
   return (
-    <div className='w-full max-w-[460px] rounded-3xl bg-[#ddecff] p-3'>
-      <div className='rounded-[20px] bg-white overflow-hidden border border-[#a8afcb]'>
-        <div className='bg-[#4e33b5] py-3 px-3 sm:px-4'>
-          <h2 className='text-center text-white text-xl sm:text-2xl md:text-3xl font-extrabold tracking-wide'>
-            SESSION COMPLETE
-          </h2>
-        </div>
+    <section className="w-full max-w-[700px] self-start rounded-3xl border border-slate-600/70 bg-[#f7f8fb] p-5 shadow-sm sm:p-6 lg:mt-12">
+      <h2 className="text-2xl font-extrabold tracking-tight text-[#25356f] sm:text-4xl">
+        Your Final Score
+      </h2>
 
-        <div className='px-3 sm:px-4 py-4 text-center text-[#334684]'>
-          <img
-            src={badgeSrc}
-            alt={`${title} badge`}
-            className='w-[min(66%,220px)] sm:w-[66%] max-w-[300px] mx-auto object-contain'
-          />
-
-          <h3 className='mt-2 text-2xl sm:text-3xl md:text-4xl font-bold px-1'>{title}</h3>
-          {blurb ? (
-            <p className='mt-2 text-base sm:text-lg leading-snug text-[#334684] max-w-[390px] mx-auto px-1'>
-              {blurb}
-            </p>
-          ) : null}
-
-          <div className='my-3 border-t-6 border-dotted border-black' />
-
-          <p className='text-lg sm:text-xl font-extrabold'>YOUR FINAL SCORE</p>
-          <p className='text-2xl sm:text-3xl mt-1.5 font-medium'>{scoreLabel} points</p>
-
-          <div className='my-3 border-t-6 border-dotted border-black' />
-
-          {scenariosLine ? (
-            <ul className='text-left text-base sm:text-[20px] leading-tight text-[#1f1f27] space-y-1.5 max-w-[390px] mx-auto pb-1 px-1'>
-              <li>• {scenariosLine}</li>
-            </ul>
-          ) : null}
+      <div className="mt-5 flex items-center gap-4 rounded-2xl bg-[#eef3f8] p-4 sm:p-5">
+        <img
+          src={mockBadge}
+          alt="Phish Shield Pro badge"
+          className="h-16 w-16 shrink-0 rounded-2xl sm:h-30 sm:w-30 mr-5"
+        />
+        <div className="min-w-0">
+          <p className="text-3xl font-extrabold leading-none text-[#22316a] sm:text-4xl">
+            8920 <span className="text-2xl font-medium sm:text-3xl">out of 10000</span>
+          </p>
+          <p className="mt-1 text-2xl font-extrabold text-[#25356f] sm:text-3xl">
+            Phish Shield Pro
+          </p>
+          <p className="mt-0.5 text-base text-slate-700 sm:text-lg">
+            Strong evidence - biased decisions
+          </p>
         </div>
       </div>
-    </div>
-  )
+
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-lg text-slate-800 sm:text-2xl">
+        <p>Correct verdicts: 9/10</p>
+        <p>Reply safety score 88%</p>
+      </div>
+    </section>
+  );
 }
 
-export default ScoreDisplay
+export default ScoreDisplay;
