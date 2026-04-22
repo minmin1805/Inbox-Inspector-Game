@@ -15,13 +15,17 @@ const TOOL_CONFIG = [
 
 const MAX_REVEALS_PER_CASE = 3;
 
-function InvestigationToolsBar({ caseData }) {
+function InvestigationToolsBar({ caseData, onRevealedToolsChange }) {
   const findings = caseData?.toolFindings;
   const [revealedTools, setRevealedTools] = useState([]);
 
   useEffect(() => {
     setRevealedTools([]);
   }, [caseData?.id]);
+
+  useEffect(() => {
+    onRevealedToolsChange?.(revealedTools);
+  }, [revealedTools, onRevealedToolsChange]);
 
   const handleReveal = (toolKey) => {
     setRevealedTools((prev) => {

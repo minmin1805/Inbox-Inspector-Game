@@ -1,6 +1,19 @@
 import React from "react";
 
-function FeedbackPopup({ onClose }) {
+function FeedbackPopup({
+  onClose,
+  verdictCorrect = false,
+  verdictScore = 0,
+  scanScore = 0,
+  replyScore = 0,
+  caseTotal = 0,
+  tip = "If unsure, verify through an official channel.",
+  isLastCase = false,
+}) {
+  const verdictText = verdictCorrect
+    ? "Great call - your verdict matches the clues."
+    : "Not quite - compare clues next time.";
+
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]">
       <div className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-4xl border border-slate-300 bg-[#f4f5f7] shadow-2xl">
@@ -16,11 +29,11 @@ function FeedbackPopup({ onClose }) {
         <div className="space-y-4 overflow-y-auto p-4 sm:p-6">
           <section className="rounded-xl border border-slate-500/70 bg-[#eef2f6] p-4">
             <p className="text-xl font-semibold text-slate-800 sm:text-2xl">
-              <span aria-hidden>⚠️ </span>
+              <span aria-hidden>{verdictCorrect ? "✅ " : "⚠️ "}</span>
               Verdict
             </p>
             <p className="mt-1.5 text-lg text-slate-800 sm:text-2xl">
-              Not quite - compare clues next time
+              {verdictText}
             </p>
           </section>
 
@@ -31,19 +44,19 @@ function FeedbackPopup({ onClose }) {
             <div className="mt-2.5 space-y-2.5 text-xl text-slate-900 sm:text-2xl">
               <div className="flex items-center justify-between border-b border-slate-500/50 pb-2">
                 <span>Verdict</span>
-                <span className="font-semibold">+600</span>
+                <span className="font-semibold">+{verdictScore}</span>
               </div>
               <div className="flex items-center justify-between border-b border-slate-500/50 pb-2">
                 <span>Scan efficiency</span>
-                <span className="font-semibold">+120</span>
+                <span className="font-semibold">+{scanScore}</span>
               </div>
               <div className="flex items-center justify-between border-b border-slate-500/50 pb-2">
                 <span>Safe reply quality</span>
-                <span className="font-semibold">+200</span>
+                <span className="font-semibold">+{replyScore}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span>Case total</span>
-                <span className="font-semibold">920/1000</span>
+                <span className="font-semibold">{caseTotal}/1000</span>
               </div>
             </div>
           </section>
@@ -74,8 +87,7 @@ function FeedbackPopup({ onClose }) {
           <section className="rounded-2xl border border-slate-500/70 bg-[#d9fbff] px-4 py-3 text-slate-900 sm:px-5">
             <p className="text-lg font-medium sm:text-xl">
               <span aria-hidden>❔ </span>
-              Tip: if unsure, pick Sketchy and verify through an official
-              channel
+              Tip: {tip}
             </p>
           </section>
 
@@ -85,7 +97,7 @@ function FeedbackPopup({ onClose }) {
               onClick={onClose}
               className="rounded-2xl bg-[#20d4d8] px-8 py-2.5 text-xl font-extrabold text-white shadow-sm transition hover:bg-[#13c2c8] sm:text-2xl"
             >
-              Next case
+              {isLastCase ? "Finish game" : "Next case"}
             </button>
           </div>
         </div>

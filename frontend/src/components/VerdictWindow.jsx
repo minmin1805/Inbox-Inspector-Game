@@ -19,6 +19,7 @@ function VerdictWindow({ caseData, onSubmit }) {
   const [reply, setReply] = useState(() => caseData?.starterReply || "");
 
   useEffect(() => {
+    setSelected("phishing");
     setReply(caseData?.starterReply || "");
   }, [caseData?.id, caseData?.starterReply]);
 
