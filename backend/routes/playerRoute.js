@@ -1,0 +1,9 @@
+import express from 'express';
+import { getLeaderboard, createPlayer, updatePlayer } from '../controllers/playerController.js';
+
+const router = express.Router();
+
+router.get('/leaderboard', getLeaderboard);
+router.post("/", createPlayer);
+router.patch("/:id", updatePlayer);
+export default router;
