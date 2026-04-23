@@ -7,6 +7,7 @@ function Header({
   totalCases = 10,
   currentScore = 0,
   playerName,
+  onHowToPlay,
 }) {
   return (
     <header className="w-full border-b border-cyan-100/90 bg-[#afdfff] px-4 py-5 sm:px-6">
@@ -30,12 +31,22 @@ function Header({
               Score: {currentScore}
             </p>
           </div>
-          <Link
-            to="/instruction"
-            className="shrink-0 rounded-xl bg-slate-200/80 px-3 py-1.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-200 sm:px-4 sm:py-2 sm:text-xl"
-          >
-            How to play
-          </Link>
+          {onHowToPlay ? (
+            <button
+              type="button"
+              onClick={onHowToPlay}
+              className="shrink-0 rounded-xl bg-slate-200/80 px-3 py-1.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-200 sm:px-4 sm:py-2 sm:text-xl"
+            >
+              How to play
+            </button>
+          ) : (
+            <Link
+              to="/instruction"
+              className="shrink-0 rounded-xl bg-slate-200/80 px-3 py-1.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-200 sm:px-4 sm:py-2 sm:text-xl"
+            >
+              How to play
+            </Link>
+          )}
         </div>
       </div>
     </header>

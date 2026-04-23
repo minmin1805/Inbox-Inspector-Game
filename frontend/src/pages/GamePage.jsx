@@ -6,6 +6,7 @@ import EmailWindow from "../components/EmailWindow";
 import InvestigationToolsBar from "../components/InvestigationToolsBar";
 import VerdictWindow from "../components/VerdictWindow";
 import FeedbackPopup from "../components/FeedbackPopup";
+import InstructionPopup from "../components/InstructionPopup";
 import levels from "../data/inboxInspectorLevels.json";
 import { gradeInboxReply, updatePlayer } from "../services/playerService";
 
@@ -14,6 +15,7 @@ function GamePage() {
   const cases = levels.cases;
   const [caseIndex, setCaseIndex] = useState(0);
   const [showFeedbackPopup, setShowFeedbackPopup] = useState(false);
+  const [showInstructionPopup, setShowInstructionPopup] = useState(false);
   const [revealedTools, setRevealedTools] = useState([]);
   const [feedbackData, setFeedbackData] = useState(null);
   const [gameStats, setGameStats] = useState({
@@ -255,6 +257,7 @@ function GamePage() {
         totalCases={totalCases}
         currentScore={gameStats.totalScore}
         playerName={player?.name}
+        onHowToPlay={() => setShowInstructionPopup(true)}
       />
 
       <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:gap-10 xl:px-10 2xl:px-14">
@@ -286,6 +289,10 @@ function GamePage() {
           />
         </div>
       </main>
+
+      {showInstructionPopup && (
+        <InstructionPopup onClose={() => setShowInstructionPopup(false)} />
+      )}
 
       {showFeedbackPopup && feedbackData && (
         <FeedbackPopup
