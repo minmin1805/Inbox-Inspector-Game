@@ -98,22 +98,56 @@ function fallbackGrade({ playerReply, correctVerdict }) {
   };
 }
 
+function isOpenAiV1BaseUrl(endpoint) {
+  if (!endpoint) return false;
+  return /\/openai\/v1\/?$/i.test(endpoint.replace(/\/+$/, ""));
+}
+
 function isAzureConfigured() {
-  return Boolean(
-    process.env.AZURE_OPENAI_ENDPOINT &&
-      process.env.AZURE_OPENAI_API_KEY &&
-      process.env.AZURE_OPENAI_DEPLOYMENT &&
-      process.env.AZURE_OPENAI_API_VERSION
-  );
+  const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
+  const key = process.env.AZURE_OPENAI_API_KEY;
+  const deployment = process.env.AZURE_OPENAI_DEPLOYMENT;
+  if (!endpoint || !key || !deployment) return false;
+  if (isOpenAiV1BaseUrl(endpoint)) return true;
+  // Legacy: resource root + api-version
+  return Boolean(process.env.AZURE_OPENAI_API_VERSION);
+}
+
+/**
+ * Resolves the chat-completions URL for either:
+ * - OpenAI-compatible v1: .../openai/v1/ + /chat/completions (Azure portal sample)
+ * - Classic Azure: .../openai/deployments/{deployment}/chat/completions?api-version=...
+ */
+function resolveChatCompletionsUrl() {
+  const raw = process.env.AZURE_OPENAI_ENDPOINT || "";
+  const base = raw.replace(/\/+$/, "");
+  const deployment = process.env.AZURE_OPENAI_DEPLOYMENT;
+  const apiVersion = process.env.AZURE_OPENAI_API_VERSION;
+
+  if (isOpenAiV1BaseUrl(base)) {
+    const path = `${base}/chat/completions`;
+    if (apiVersion) {
+      const sep = path.includes("?") ? "&" : "?";
+      return `${path}${sep}api-version=${encodeURIComponent(apiVersion)}`;
+    }
+    return path;
+  }
+
+  if (!apiVersion) {
+    throw new Error("AZURE_OPENAI_API_VERSION is required for non-v1 Azure endpoints");
+  }
+  return `${base}/openai/deployments/${deployment}/chat/completions?api-version=${encodeURIComponent(
+    apiVersion
+  )}`;
 }
 
 async function callAzureGrade({ caseId, playerReply, channel, correctVerdict, theme }) {
   const endpoint = process.env.AZURE_OPENAI_ENDPOINT?.replace(/\/+$/, "");
   const deployment = process.env.AZURE_OPENAI_DEPLOYMENT;
-  const apiVersion = process.env.AZURE_OPENAI_API_VERSION;
+  const useV1 = isOpenAiV1BaseUrl(endpoint);
   const apiKey = process.env.AZURE_OPENAI_API_KEY;
 
-  const url = `${endpoint}/openai/deployments/${deployment}/chat/completions?api-version=${apiVersion}`;
+  const url = resolveChatCompletionsUrl();
 
   const systemPrompt =
     "You evaluate the SAFETY QUALITY of a player's reply to suspicious or legit inbox messages for teens. " +
@@ -134,6 +168,19 @@ async function callAzureGrade({ caseId, playerReply, channel, correctVerdict, th
     ],
   };
 
+  const requestBody = {
+    temperature: 0.1,
+    max_tokens: 180,
+    response_format: { type: "json_object" },
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: JSON.stringify(userPrompt) },
+    ],
+  };
+  if (useV1) {
+    requestBody.model = deployment;
+  }
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), AZURE_TIMEOUT_MS);
   try {
@@ -143,15 +190,7 @@ async function callAzureGrade({ caseId, playerReply, channel, correctVerdict, th
         "Content-Type": "application/json",
         "api-key": apiKey,
       },
-      body: JSON.stringify({
-        temperature: 0.1,
-        max_tokens: 180,
-        response_format: { type: "json_object" },
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: JSON.stringify(userPrompt) },
-        ],
-      }),
+      body: JSON.stringify(requestBody),
       signal: controller.signal,
     });
 
