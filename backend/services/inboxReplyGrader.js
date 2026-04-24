@@ -4,9 +4,30 @@ function normalizeText(input) {
   return String(input || "").trim();
 }
 
+/**
+ * Match frontend InboxInspectorContext: drop refusal sentences before flagging
+ * "code" / "gift card" so "I won't send the code" is not treated as sharing.
+ */
+function stripRefusalClausesForRiskScoringBackend(lower) {
+  const parts = lower
+    .split(/(?<=[.!?])\s+|\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  const chunks = parts.length > 0 ? parts : (lower.trim() ? [lower.trim()] : []);
+  if (chunks.length === 0) return "";
+  const kept = chunks.filter(
+    (p) =>
+      !/^(i\s+)?(won't|wont|don't|do not|never|will not|can't|cannot)\b/i.test(
+        p
+      ) && !/^(no|nope|never)\.?\s*$/i.test(p)
+  );
+  return kept.join(" ").trim();
+}
+
 function getHeuristicSignals(reply) {
   const text = normalizeText(reply);
   const lower = text.toLowerCase();
+  const textForUnsafeKeywords = stripRefusalClausesForRiskScoringBackend(lower);
 
   const noWhitespace = lower.replace(/\s+/g, "");
   const alphaOnly = noWhitespace.replace(/[^a-z]/g, "");
@@ -19,11 +40,12 @@ function getHeuristicSignals(reply) {
     : 0;
 
   const hasUnsafeKeywords =
+    Boolean(textForUnsafeKeywords) &&
     /\b(password|passcode|otp|code|gift card|ssn|bank|account number|send money|wire|id photo)\b/.test(
-      lower
+      textForUnsafeKeywords
     );
   const hasSafeAction =
-    /\b(verify|official|app|website|trusted adult|in person|report|ignore|contact)\b/.test(
+    /\b(verify|check|double-check|confirm|official|app|website|safely|trusted adult|in person|report|ignore|contact|block|unsubscribe|won't|will not)\b/.test(
       lower
     );
 
@@ -46,7 +68,30 @@ function getHeuristicSignals(reply) {
   };
 }
 
-function fallbackGrade({ playerReply, correctVerdict }) {
+function coachTipOkBandDefault(theme, channel, correctVerdict) {
+  if (theme === "friend_trip_photo_legit" && correctVerdict === "legit") {
+    return "For a friend message, you can also confirm on another app or in person you already trust with them—no company 'official site' needed.";
+  }
+  if (channel === "dm" && correctVerdict === "legit") {
+    return "When it’s social, be specific: confirm it’s the person (another chat, call) before private steps—not always a business website.";
+  }
+  if (correctVerdict === "legit") {
+    return "For businesses and accounts, be specific: use the official app/site you already trust or verify in person.";
+  }
+  return "Be specific: use official channels, out-of-band confirmation, or a trusted adult when something feels off.";
+}
+
+function coachTipStrongLegit(theme, channel) {
+  if (theme === "friend_trip_photo_legit") {
+    return "Good call — for friends, that’s a normal way to be careful with photos and who can see them.";
+  }
+  if (channel === "dm") {
+    return "Good — keep confirming who you’re talking to on channels you already trust with that person.";
+  }
+  return "Good: keep actions on official channels and apps you already trust.";
+}
+
+function fallbackGrade({ playerReply, correctVerdict, theme, channel }) {
   const s = getHeuristicSignals(playerReply);
 
   if (s.isBlank) {
@@ -84,7 +129,7 @@ function fallbackGrade({ playerReply, correctVerdict }) {
       shortRationale: "Reply uses explicit safe verification actions.",
       coachTip:
         correctVerdict === "legit"
-          ? "Good: keep actions on official channels."
+          ? coachTipStrongLegit(theme, channel)
           : "Good: you avoided risky steps and chose safer verification.",
     };
   }
@@ -93,8 +138,7 @@ function fallbackGrade({ playerReply, correctVerdict }) {
     replySafetyBand: "ok",
     sharesCredentials: false,
     shortRationale: "Reply is understandable but lacks specific safety actions.",
-    coachTip:
-      "Be specific: mention checking an official app/site or verifying in person.",
+    coachTip: coachTipOkBandDefault(theme, channel, correctVerdict),
   };
 }
 
@@ -152,7 +196,9 @@ async function callAzureGrade({ caseId, playerReply, channel, correctVerdict, th
   const systemPrompt =
     "You evaluate the SAFETY QUALITY of a player's reply to suspicious or legit inbox messages for teens. " +
     "Return strict JSON only with keys: replySafetyBand (strong|ok|weak), sharesCredentials (boolean), shortRationale (<=18 words), coachTip (<=22 words). " +
-    "Mark weak for blank, gibberish, nonsense, or unsafe sharing/payment actions.";
+    "Mark weak for blank, gibberish, nonsense, or unsafe sharing/payment actions. " +
+    "sharesCredentials MUST be false when the player only REFUSES to share (e.g. \"I won't send ID/money/codes\") or names what they will not share — referring to sensitive items in a refusal is NOT sharing. " +
+    "Set sharesCredentials true only if they indicate they WILL or DID share secrets, codes, payment, or ID.";
 
   const userPrompt = {
     task: "Grade this player reply for safety quality.",
@@ -166,6 +212,12 @@ async function callAzureGrade({ caseId, playerReply, channel, correctVerdict, th
       "ok: understandable but vague safe action",
       "weak: blank, gibberish, or unsafe sharing/payment behavior",
     ],
+    note:
+      theme === "friend_trip_photo_legit" && channel === "dm"
+        ? "This case is a casual friend/photo share. coachTip should NOT default to 'bank/company official website' unless the message is about a business. For friends, 'verify' can mean confirm it's really the person (another app, in person) or keep private photos in trusted threads."
+        : theme === "manager_gift_card_scam"
+          ? "Fake boss asks for gift card codes. Refusing to send codes, reporting or blocking, and verifying with the real manager are STRONG. Mentioning 'code' or 'gift card' only in a refusal (e.g. I won't send codes) is NOT sharing. replySafetyBand should be at least ok, often strong. coachTip: praise no-code + verify/block — do not scold for the word 'code' in a refusal."
+          : "coachTip should match the situation (DM vs email, social vs business).",
   };
 
   const requestBody = {
@@ -228,17 +280,17 @@ export async function gradeInboxReply(payload) {
   const text = normalizeText(playerReply);
 
   if (!text) {
-    return fallbackGrade({ playerReply: text, correctVerdict });
+    return fallbackGrade({ playerReply: text, correctVerdict, theme, channel });
   }
 
   // Hard guard for gibberish/low quality before any API call.
   const signals = getHeuristicSignals(text);
   if (signals.looksLikeGibberish || signals.isVeryShort) {
-    return fallbackGrade({ playerReply: text, correctVerdict });
+    return fallbackGrade({ playerReply: text, correctVerdict, theme, channel });
   }
 
   if (!isAzureConfigured()) {
-    return fallbackGrade({ playerReply: text, correctVerdict });
+    return fallbackGrade({ playerReply: text, correctVerdict, theme, channel });
   }
 
   try {
@@ -250,7 +302,7 @@ export async function gradeInboxReply(payload) {
       theme,
     });
   } catch (error) {
-    return fallbackGrade({ playerReply: text, correctVerdict });
+    return fallbackGrade({ playerReply: text, correctVerdict, theme, channel });
   }
 }
 

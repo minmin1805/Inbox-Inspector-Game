@@ -1,15 +1,26 @@
 import React from "react";
-import mockBadge from "../assets/Image/EndgamePage/mockBadge.png";
+import inboxMasterBadge from "../assets/Image/EndgamePage/inboxMasterBadge.png";
+import caseAnalystBadge from "../assets/Image/EndgamePage/caseAnalystBadge.png";
+import inboxRookieBadge from "../assets/Image/EndgamePage/inboxRookieBadge.png";
+import { getInboxInspectorRankByScore } from "../utils/inboxInspectorBadges.js";
+
+const BADGE_IMAGES = {
+  master: inboxMasterBadge,
+  analyst: caseAnalystBadge,
+  rookie: inboxRookieBadge,
+};
 
 function ScoreDisplay({
   totalScore = 0,
   maxScore = 10000,
-  badgeTitle = "Phish Shield Starter",
-  badgeBlurb = "Good effort — keep practicing your checks",
   correctVerdicts = 0,
   totalCases = 10,
   replySafetyPercent = 0,
 }) {
+  const rank = getInboxInspectorRankByScore(totalScore);
+  const badgeSrc = BADGE_IMAGES[rank.id];
+  const badgeAlt = `${rank.title} badge`;
+
   return (
     <section className="w-full max-w-[700px] self-start rounded-3xl border border-slate-600/70 bg-[#f7f8fb] p-5 shadow-sm sm:p-6 lg:mt-12">
       <h2 className="text-2xl font-extrabold tracking-tight text-[#25356f] sm:text-4xl">
@@ -18,9 +29,9 @@ function ScoreDisplay({
 
       <div className="mt-5 flex items-center gap-4 rounded-2xl bg-[#eef3f8] p-4 sm:p-5">
         <img
-          src={mockBadge}
-          alt="Phish Shield Pro badge"
-          className="h-16 w-16 shrink-0 rounded-2xl sm:h-30 sm:w-30 mr-5"
+          src={badgeSrc}
+          alt={badgeAlt}
+          className="h-16 w-16 shrink-0 rounded-2xl sm:mr-5 sm:h-30 sm:w-30"
         />
         <div className="min-w-0">
           <p className="text-3xl font-extrabold leading-none text-[#22316a] sm:text-4xl">
@@ -30,10 +41,10 @@ function ScoreDisplay({
             </span>
           </p>
           <p className="mt-1 text-2xl font-extrabold text-[#25356f] sm:text-3xl">
-            {badgeTitle}
+            {rank.title}
           </p>
           <p className="mt-0.5 text-base text-slate-700 sm:text-lg">
-            {badgeBlurb}
+            {rank.blurb}
           </p>
         </div>
       </div>

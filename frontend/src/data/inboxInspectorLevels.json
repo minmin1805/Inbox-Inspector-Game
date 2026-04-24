@@ -82,7 +82,7 @@
       "coachTip": "Legit school notices usually push you to an official app and never ask for codes by email."
     },
     {
-      "id": "case-06",
+      "id": "case-03",
       "caseNumber": 6,
       "channel": "dm",
       "theme": "account_takeover_otp",
@@ -183,7 +183,7 @@
       "coachTip": "Real hiring follow-ups can include documents—but fees and ID photos are red flags when rushed."
     },
     {
-      "id": "case-03",
+      "id": "case-06",
       "caseNumber": 3,
       "channel": "email",
       "theme": "delivery_sketchy",

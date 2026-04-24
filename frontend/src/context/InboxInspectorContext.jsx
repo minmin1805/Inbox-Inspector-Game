@@ -9,20 +9,94 @@ import React, {
 import { useNavigate } from "react-router-dom";
 import levels from "../data/inboxInspectorLevels.json";
 import { gradeInboxReply, updatePlayer } from "../services/playerService";
+import { getBadgeTitleAndBlurbFromScore } from "../utils/inboxInspectorBadges.js";
 
 const InboxInspectorContext = createContext(null);
+
+/**
+ * "Unsafe action" heuristics must not fire on refusals like "I won't click the button"
+ * or "I won't open the PDF" (click + button / open are still in the sentence).
+ */
+const RISKY_ACTION_PATTERN =
+  /\b(click|tap|open|use)\b.{0,40}\b(link|button|url)\b|\bsend\b.{0,30}\b(code|otp|id|money|payment)\b|\bshare\b.{0,30}\b(code|password|id)\b/gi;
+
+function hasRefusalBeforeIndex(text, matchIndex) {
+  const start = Math.max(0, matchIndex - 80);
+  const before = text.slice(start, matchIndex);
+  return (
+    /\b(i\s+)?(won't|wont|don't|do not|never|can't|cannot)\b/i.test(before) ||
+    /\b(i\s+)?will\s+not\b/i.test(before) ||
+    /\brefuse[sd]?\s+to\s*$/i.test(before)
+  );
+}
+
+function hasUnnegatedRiskyActionPhrasing(text) {
+  const copy = String(text);
+  RISKY_ACTION_PATTERN.lastIndex = 0;
+  let m;
+  while ((m = RISKY_ACTION_PATTERN.exec(copy)) !== null) {
+    if (!hasRefusalBeforeIndex(copy, m.index)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Splits the reply into rough clauses/sentences and drops lines that are clearly
+ * refusals (I won't / don't / never …). The remainder is what we use for
+ * "risky keyword" detection so "photo of id" in "I won't send a photo of id"
+ * does not count as a credential leak.
+ */
+function stripRefusalOnlyClausesForRiskScoring(lower) {
+  const parts = lower
+    .split(/(?<=[.!?])\s+|\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  const chunks = parts.length > 0 ? parts : (lower.trim() ? [lower.trim()] : []);
+  if (chunks.length === 0) return "";
+  const kept = chunks.filter(
+    (p) =>
+      !/^(i\s+)?(won't|wont|don't|do not|never|will not|can't|cannot)\b/i.test(
+        p
+      ) && !/^(no|nope|never)\.?\s*$/i.test(p)
+  );
+  return kept.join(" ").trim();
+}
+
+function isLikelyRefusalOnlyReply(s) {
+  const lower = String(s || "")
+    .toLowerCase()
+    .trim();
+  if (!lower) return false;
+  const parts = lower
+    .split(/(?<=[.!?])\s+|\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  const chunks = parts.length > 0 ? parts : [lower];
+  return chunks.every(
+    (p) =>
+      /^(i\s+)?(won't|wont|don't|do not|never|will not|can't|cannot)\b/i.test(
+        p
+      ) || /^(no|nope|never)\.?\s*$/i.test(p)
+  );
+}
 
 function scoreReply(replyText) {
   const text = String(replyText || "").toLowerCase();
   if (!text.trim()) return 60;
 
+  // Only flag sensitive keywords outside explicit refusal lines (e.g. not "I won't send ID").
+  const textForRiskyKeywords = stripRefusalOnlyClausesForRiskScoring(text);
   const riskyPattern =
     /\b(password|passcode|otp|code|gift card|id|ssn|bank|send money|wire)\b/;
   const safePattern =
-    /\b(verify|official|app|website|trusted|report|ignore|won't|will not|in person)\b/;
+    /\b(verify|check|double-check|confirm|official|app|website|trusted|report|ignore|block|unsubscribe|won't|will not|in person|safely)\b/;
 
   let score = 160;
-  if (riskyPattern.test(text)) score -= 130;
+  if (textForRiskyKeywords && riskyPattern.test(textForRiskyKeywords)) {
+    score -= 130;
+  }
   if (safePattern.test(text)) score += 100;
   if (text.length > 150) score += 40;
 
@@ -30,22 +104,7 @@ function scoreReply(replyText) {
 }
 
 function getBadgeFromScore(score) {
-  if (score >= 8500) {
-    return {
-      title: "Phish Shield Pro",
-      blurb: "Strong evidence-based decisions",
-    };
-  }
-  if (score >= 6500) {
-    return {
-      title: "Phish Shield Plus",
-      blurb: "Solid instincts with room to improve",
-    };
-  }
-  return {
-    title: "Phish Shield Starter",
-    blurb: "Good effort — keep practicing your checks",
-  };
+  return getBadgeTitleAndBlurbFromScore(score);
 }
 
 export function InboxInspectorProvider({ children }) {
@@ -118,12 +177,10 @@ export function InboxInspectorProvider({ children }) {
         };
       }
 
-      const riskyActionPattern =
-        /\b(click|tap|open|use)\b.{0,40}\b(link|button|url)\b|\bsend\b.{0,30}\b(code|otp|id|money|payment)\b|\bshare\b.{0,30}\b(code|password|id)\b/i;
       const trustsMessagePattern =
-        /\b(this|it|message)\b.{0,20}\b(legit|safe|trusted|real)\b|\bi\s*(will|would)\s*(click|tap|open)\b/i;
+        /\b(this|it|message)\b.{0,20}\b(legit|safe|trusted|real)\b|\b(i|we)\s*(will|would)\s+(click|tap|open)\b/i;
       const encouragesUnsafe =
-        riskyActionPattern.test(text) || trustsMessagePattern.test(text);
+        hasUnnegatedRiskyActionPhrasing(text) || trustsMessagePattern.test(text);
 
       if (currentCase.correctVerdict !== "legit" && encouragesUnsafe) {
         return {
@@ -135,7 +192,7 @@ export function InboxInspectorProvider({ children }) {
 
       if (
         currentCase.correctVerdict === "legit" &&
-        riskyActionPattern.test(text) &&
+        hasUnnegatedRiskyActionPhrasing(text) &&
         /send|share|code|password|id|money|payment/i.test(lower)
       ) {
         return {
@@ -160,7 +217,9 @@ export function InboxInspectorProvider({ children }) {
             : ai.replySafetyBand === "ok"
               ? 25
               : -70;
-        const credentialPenalty = ai.sharesCredentials ? -80 : 0;
+        // AI sometimes flags "ID/money" as sharing even when the player only refuses; don't penalize that.
+        const credentialPenalty =
+          ai.sharesCredentials && !isLikelyRefusalOnlyReply(text) ? -80 : 0;
         const blended = Math.max(
           0,
           Math.min(300, localScore + bandBonus + credentialPenalty)

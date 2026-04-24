@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/Image/WelcomePage/logo.png";
 import ScoreDisplay from "../components/ScoreDisplay";
 import Leaderboard from "../components/Leaderboard";
+import logo3 from "../assets/Image/WelcomePage/logo3.png";
 
 function EndgamePage() {
   const location = useLocation();
@@ -17,9 +18,7 @@ function EndgamePage() {
   const correctVerdicts = Number(result.correctVerdicts || 0);
   const totalCases = Number(result.totalCases || 10);
   const replySafetyPercent = Number(result.replySafetyPercent || 0);
-  const badgeTitle = result.badgeTitle || "Phish Shield Starter";
-  const badgeBlurb =
-    result.badgeBlurb || "Good effort — keep practicing your checks";
+  // Rank title/blurb are derived from totalScore in ScoreDisplay (source of truth).
 
   const handleExit = () => {
     sessionStorage.removeItem("inboxInspectorLastResult");
@@ -30,16 +29,16 @@ function EndgamePage() {
   return (
     <div className="min-h-dvh w-full bg-[#ccffff] px-4 py-4 sm:px-7 sm:py-6">
       <div className="mx-auto flex w-full max-w-[1600px] flex-col items-center">
-        <header className="w-full">
+        <header className="w-full flex justify-center items-center">
           <img
-            src={logo}
+            src={logo3}
             alt="Inbox Inspector"
-            className="h-12 w-auto sm:h-14"
+            className="w-63 "
           />
         </header>
 
-        <div className="mt-2 text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight text-[#24346f] sm:text-5xl">
+        <div className="mt-5 text-center">
+          <h1 className="text-4xl font-extrabold tracking-tight text-[#24346f] sm:text-3xl">
             Case Closed
           </h1>
           <p className="mt-1 text-xl text-slate-700 sm:text-2xl">
@@ -51,8 +50,6 @@ function EndgamePage() {
           <ScoreDisplay
             totalScore={totalScore}
             maxScore={10000}
-            badgeTitle={badgeTitle}
-            badgeBlurb={badgeBlurb}
             correctVerdicts={correctVerdicts}
             totalCases={totalCases}
             replySafetyPercent={replySafetyPercent}
