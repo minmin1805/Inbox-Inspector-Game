@@ -84,6 +84,8 @@ function GamePageContent() {
           caseTotal={feedbackData.caseTotal}
           tip={feedbackData.tip}
           isLastCase={isLastCase}
+          feedbackWhyVerdict={currentCase?.feedbackWhyVerdict}
+          feedbackIfYouSeeThis={currentCase?.feedbackIfYouSeeThis}
         />
       )}
     </div>

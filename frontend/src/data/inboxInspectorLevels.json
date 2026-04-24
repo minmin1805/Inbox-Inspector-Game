@@ -1,7 +1,7 @@
 {
-  "$schemaNotes": "Inbox Inspector — 10 cases. UI chrome stays clean; weirdText applies to message body only. Graphics keys drive which assets to show.",
+  "$schemaNotes": "Inbox Inspector — 10 cases. feedbackWhyVerdict = post-game teaching (heading + points); feedbackIfYouSeeThis = real-world checklist (heading + actions). Optional fallbacks in FeedbackPopup if omitted.",
   "gameId": "inbox-inspector",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "assetKeys": {
     "giftIcon": "graphics/gift-reward.png",
     "clickHereButton": "graphics/cta-click-here.png",
@@ -45,7 +45,22 @@
         "attachmentQrCheck": "No attachment in this DM."
       },
       "starterReply": "I won't use links or buttons from messages. I'll verify in the official app.",
-      "coachTip": "Prize scams often pair urgency with fake reward graphics—slow down and verify out of band."
+      "coachTip": "Prize scams often pair urgency with fake reward graphics—slow down and verify out of band.",
+      "feedbackWhyVerdict": {
+        "heading": "Why: Phishing",
+        "points": [
+          "Timer + “you won” + typos = classic fake-prize pressure.",
+          "“Confirm your account” here trains you to hand over logins or money."
+        ]
+      },
+      "feedbackIfYouSeeThis": {
+        "heading": "In real life",
+        "actions": [
+          "Don’t tap the link — the rush is the trap.",
+          "Check a real brand only in its app/site you already use.",
+          "Block or report; ask an adult if you’re unsure."
+        ]
+      }
     },
     {
       "id": "case-02",
@@ -79,7 +94,22 @@
         "attachmentQrCheck": "PDF filename looks normal and matches a help document."
       },
       "starterReply": "Thanks — I'll check login activity in the official school app.",
-      "coachTip": "Legit school notices usually push you to an official app and never ask for codes by email."
+      "coachTip": "Legit school notices usually push you to an official app and never ask for codes by email.",
+      "feedbackWhyVerdict": {
+        "heading": "Why: Legit",
+        "points": [
+          "School domain + routine tone, not a secret deal or panic pay.",
+          "Pushes the official app; never asks for codes or money in a reply."
+        ]
+      },
+      "feedbackIfYouSeeThis": {
+        "heading": "In real life",
+        "actions": [
+          "Open the school app from your device — not random links in email.",
+          "Sign out odd devices in the app; reset password only in the app.",
+          "Contact IT from the real school site if anything feels wrong."
+        ]
+      }
     },
     {
       "id": "case-03",
@@ -113,7 +143,22 @@
         "attachmentQrCheck": "No attachment."
       },
       "starterReply": "I can't share codes. I'll verify with you through your main account or in person.",
-      "coachTip": "Never share OTP codes—codes are keys to your account."
+      "coachTip": "Never share OTP codes—codes are keys to your account.",
+      "feedbackWhyVerdict": {
+        "heading": "Why: Phishing",
+        "points": [
+          "Nobody legit needs *your* login code sent in chat — that’s a takeover play.",
+          "Urgency + a sketchy or new account = high risk."
+        ]
+      },
+      "feedbackIfYouSeeThis": {
+        "heading": "In real life",
+        "actions": [
+          "Never send codes or passwords to “fix” a story in DMs.",
+          "Confirm the person on a channel you already trust (or in person).",
+          "Report the account; turn on 2FA in the app’s real settings."
+        ]
+      }
     },
     {
       "id": "case-04",
@@ -147,7 +192,22 @@
         "attachmentQrCheck": "Attachment filename looks random/gibberish—high risk."
       },
       "starterReply": "I won't pay fees or send ID by email. I'll verify this employer through official channels.",
-      "coachTip": "Upfront fees plus random contract filenames are common job-scam patterns."
+      "coachTip": "Upfront fees plus random contract filenames are common job-scam patterns.",
+      "feedbackWhyVerdict": {
+        "heading": "Why: Phishing",
+        "points": [
+          "Real employers don’t take random email fees to “hold” a job.",
+          "Pay link in a sketchy PDF + ID photo = classic job scam pack."
+        ]
+      },
+      "feedbackIfYouSeeThis": {
+        "heading": "In real life",
+        "actions": [
+          "No payment or ID by email; don’t use their pay link.",
+          "Find the company yourself (site, phone, real job post) and apply there.",
+          "Save a screenshot, report, talk to a trusted adult if unsure."
+        ]
+      }
     },
     {
       "id": "case-05",
@@ -180,7 +240,22 @@
         "attachmentQrCheck": "PDF name is readable and matches an info sheet."
       },
       "starterReply": "Thank you — I'll confirm through your official website.",
-      "coachTip": "Real hiring follow-ups can include documents—but fees and ID photos are red flags when rushed."
+      "coachTip": "Real hiring follow-ups can include documents—but fees and ID photos are red flags when rushed.",
+      "feedbackWhyVerdict": {
+        "heading": "Why: Legit",
+        "points": [
+          "Public org + in-person interview, sign-up via their public site (Jobs), not a random pay app.",
+          "No money, gift cards, or ID demanded in the DM for this step."
+        ]
+      },
+      "feedbackIfYouSeeThis": {
+        "heading": "In real life",
+        "actions": [
+          "Use only the org’s own website to book time — type the URL or search it.",
+          "Show up with what the info sheet says; no wire or card fees up front.",
+          "If a follow-up DMs for money or ID, stop — call the place you looked up."
+        ]
+      }
     },
     {
       "id": "case-06",
@@ -214,7 +289,22 @@
         "attachmentQrCheck": "Attachment name looks odd—verify before opening."
       },
       "starterReply": "I won't use this email link. I'll check tracking in the carrier app I already use.",
-      "coachTip": "If unsure, verify delivery status through the official carrier app or website you trust."
+      "coachTip": "If unsure, verify delivery status through the official carrier app or website you trust.",
+      "feedbackWhyVerdict": {
+        "heading": "Why: Sketchy — check first",
+        "points": [
+          "Generic sender; might not be your real carrier or store.",
+          "“Portal” + possible fee = often phishing; could also be real — verify outside this email."
+        ]
+      },
+      "feedbackIfYouSeeThis": {
+        "heading": "In real life",
+        "actions": [
+          "Check tracking in the carrier app you already use, not the email link first.",
+          "For a store order, use the same retailer’s order page you used to buy.",
+          "If unsure, call the number from the carrier/retailer’s real website."
+        ]
+      }
     },
     {
       "id": "case-07",
@@ -250,7 +340,22 @@
         "attachmentQrCheck": "The promo-style photo doesn't prove the employer is real—images can be stock or stolen. Risk is still payment + ID + secrecy."
       },
       "starterReply": "I won't send money or ID in DMs. I'll verify this role through official channels with a trusted adult.",
-      "coachTip": "Money + ID + secrecy is a high-risk recruiting pattern."
+      "coachTip": "Money + ID + secrecy is a high-risk recruiting pattern.",
+      "feedbackWhyVerdict": {
+        "heading": "Why: Phishing",
+        "points": [
+          "ID + deposit + “keep it private” in DMs = fake hiring pattern.",
+          "A team photo proves nothing; pictures can be stolen or stock."
+        ]
+      },
+      "feedbackIfYouSeeThis": {
+        "heading": "In real life",
+        "actions": [
+          "No money, gift cards, or ID in DMs; no “secret” pay links.",
+          "Look up the org on a real site or with a trusted adult, then continue there.",
+          "Block, report, screenshot if you need to show someone."
+        ]
+      }
     },
     {
       "id": "case-08",
@@ -289,7 +394,22 @@
         "attachmentQrCheck": "No attachment — the risk is the unverified submission link."
       },
       "starterReply": "I won't use the email link. I'll open the club's website myself and find Arts → Contests to submit or confirm.",
-      "coachTip": "Plausible contests can still be wrong: short links and first-time sender addresses mean verify on the official site you navigate to yourself — not the link in the email."
+      "coachTip": "Plausible contests can still be wrong: short links and first-time sender addresses mean verify on the official site you navigate to yourself — not the link in the email.",
+      "feedbackWhyVerdict": {
+        "heading": "Why: Sketchy — check first",
+        "points": [
+          "Plausible text, but a short link can hide the real site.",
+          "New sender + deadline = verify before you upload anything."
+        ]
+      },
+      "feedbackIfYouSeeThis": {
+        "heading": "In real life",
+        "actions": [
+          "Type the org’s main site; open Arts/Contests from there, not the email link first.",
+          "Match contact info with what the real site shows.",
+          "Don’t upload your entry until the contest page and rules match on the real site."
+        ]
+      }
     },
     {
       "id": "case-09",
@@ -322,7 +442,22 @@
         "attachmentQrCheck": "Photo preview is consistent with a normal friend share (still: don't forward private photos)."
       },
       "starterReply": "Haha love it — thanks for sharing!",
-      "coachTip": "Friendly shares can be legit—compare sender identity and keep personal photos private."
+      "coachTip": "Friendly shares can be legit—compare sender identity and keep personal photos private.",
+      "feedbackWhyVerdict": {
+        "heading": "Why: Legit",
+        "points": [
+          "Known friend, normal chat — no ask for money, codes, or ID.",
+          "No “click now” link — just a photo preview, typical for DMs."
+        ]
+      },
+      "feedbackIfYouSeeThis": {
+        "heading": "In real life",
+        "actions": [
+          "Still: same handle and voice you expect from that friend.",
+          "Keep private photos off public feeds; don’t re-share without OK.",
+          "If the vibe’s off, ping them on another app or IRL you already use."
+        ]
+      }
     },
     {
       "id": "case-10",
@@ -356,7 +491,22 @@
         "attachmentQrCheck": "Attachment doesn't prove legitimacy; verify in person or official work channel."
       },
       "starterReply": "I can't buy gift cards or send codes by email. I'll verify this with my supervisor through official work contact.",
-      "coachTip": "Boss scams use urgency + secrecy + gift cards—verify through real workplace channels."
+      "coachTip": "Boss scams use urgency + secrecy + gift cards—verify through real workplace channels.",
+      "feedbackWhyVerdict": {
+        "heading": "Why: Phishing",
+        "points": [
+          "“Buy cards + email the codes + stay quiet” = classic fake-boss email.",
+          "Wrong From domain: meant to block you from asking the real manager."
+        ]
+      },
+      "feedbackIfYouSeeThis": {
+        "heading": "In real life",
+        "actions": [
+          "No gift cards or codes for “work” by email or text. Ever.",
+          "Call or walk to your real boss with a number/schedule you already know.",
+          "Forward to work IT, block sender; screenshot for proof if needed."
+        ]
+      }
     }
   ]
 }

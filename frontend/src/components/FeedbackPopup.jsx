@@ -1,4 +1,21 @@
 import React from "react";
+import { HiQuestionMarkCircle } from "react-icons/hi";
+import { FaLightbulb } from "react-icons/fa";
+
+const DEFAULT_WHY = {
+  heading: "Read the clues",
+  points: [
+    "Use sender, links, and asks from your tools before picking Phishing, Sketchy, or Legit.",
+  ],
+};
+
+const DEFAULT_IF_YOU_SEE = {
+  heading: "In real life",
+  actions: [
+    "Don’t put passwords, codes, or ID in chat replies.",
+    "Check real apps, sites, or a trusted contact path — not random links in the message.",
+  ],
+};
 
 function FeedbackPopup({
   onClose,
@@ -9,7 +26,16 @@ function FeedbackPopup({
   caseTotal = 0,
   tip = "If unsure, verify through an official channel.",
   isLastCase = false,
+  feedbackWhyVerdict = null,
+  feedbackIfYouSeeThis = null,
 }) {
+  const why = feedbackWhyVerdict && feedbackWhyVerdict.heading
+    ? feedbackWhyVerdict
+    : DEFAULT_WHY;
+  const ifYou = feedbackIfYouSeeThis && feedbackIfYouSeeThis.heading
+    ? feedbackIfYouSeeThis
+    : DEFAULT_IF_YOU_SEE;
+
   const verdictText = verdictCorrect
     ? "Great call - your verdict matches the clues."
     : "Not quite - compare clues next time.";
@@ -62,33 +88,46 @@ function FeedbackPopup({
           </section>
 
           <section className="mx-auto grid w-full max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border border-slate-500/70 bg-white p-4 text-slate-800">
-              <p className="text-xl font-extrabold sm:text-2xl">
-                <span aria-hidden>✅ </span>
-                Choose verdict
+            <div className="flex flex-col rounded-2xl border border-slate-500/70 bg-gradient-to-b from-white to-slate-50/90 p-4 text-slate-800 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-wide text-cyan-700">
+                Learn
               </p>
-              <ul className="mt-2.5 list-disc space-y-1 pl-5 text-base sm:text-lg">
-                <li>Pick Phishing, Sketchy, or Legit</li>
-                <li>Base it on your scan clues</li>
+              <p className="mt-1 text-xl font-extrabold leading-snug sm:text-2xl flex items-center gap-1">
+                <span className="text-cyan-600" aria-hidden>
+                  <HiQuestionMarkCircle className="w-7 h-7" />
+                </span>
+                {why.heading}
+              </p>
+              <ul className="mt-3 list-disc space-y-2.5 pl-5 text-base leading-relaxed sm:text-lg">
+                {(why.points || []).map((line, i) => (
+                  <li key={i}>{line}</li>
+                ))}
               </ul>
             </div>
-            <div className="rounded-2xl border border-slate-500/70 bg-white p-4 text-slate-800">
-              <p className="text-xl font-extrabold sm:text-2xl">
-                <span aria-hidden>✅ </span>
-                Write a safe reply
+            <div className="flex flex-col rounded-2xl border border-slate-500/70 bg-gradient-to-b from-white to-cyan-50/40 p-4 text-slate-800 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-wide text-emerald-800">
+                Do this
               </p>
-              <ul className="mt-2.5 list-disc space-y-1 pl-5 text-base sm:text-lg">
-                <li>No passwords, codes, or ID photos</li>
-                <li>Don&apos;t use risky links to prove anything</li>
-              </ul>
+              <p className="mt-1 text-xl font-extrabold leading-snug sm:text-2xl">
+                <span className="text-emerald-600" aria-hidden>
+                  ✓{" "}
+                </span>
+                {ifYou.heading}
+              </p>
+              <ol className="mt-3 list-decimal space-y-2.5 pl-5 text-base leading-relaxed sm:text-lg">
+                {(ifYou.actions || []).map((line, i) => (
+                  <li key={i} className="pl-0.5">
+                    {line}
+                  </li>
+                ))}
+              </ol>
             </div>
           </section>
 
           <section className="rounded-2xl border border-slate-500/70 bg-[#d9fbff] px-4 py-3 text-slate-900 sm:px-5">
-            <p className="text-lg font-medium sm:text-xl">
-              <span aria-hidden>❔ </span>
-              Tip: {tip}
-            </p>
+            <span className="text-lg font-medium sm:text-xl flex gap-1">
+              <FaLightbulb className="w-7 h-7 text-yellow-400 mr-1" /> Tip: {tip}
+            </span>
           </section>
 
           <div className="flex justify-center pt-0.5">
