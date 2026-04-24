@@ -3,6 +3,9 @@ import logo from "../assets/Image/WelcomePage/logo.png";
 import { useNavigate } from "react-router-dom";
 import { FaSearch, FaGavel, FaRegCheckCircle } from "react-icons/fa";
 import { createPlayer } from "../services/playerService";
+import logo2 from "../assets/Image/WelcomePage/logo2.png";
+import logo3 from "../assets/Image/WelcomePage/logo3.png";
+
 const NEONBLUE = "#ccffff";
 
 function WelcomePage() {
@@ -40,9 +43,9 @@ function WelcomePage() {
     >
       <header className="mx-auto flex w-full max-w-[98%] items-center justify-between">
         <img
-          src={logo}
+          src={logo3}
           alt="Inbox Inspector logo"
-          className="h-auto w-52 rounded-xl border border-[#4b5d7f] bg-white p-2 shadow-sm sm:w-85"
+          className="w-full max-w-[280px]"
         />
         <button
           type="button"

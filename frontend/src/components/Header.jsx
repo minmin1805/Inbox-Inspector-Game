@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/Image/WelcomePage/logo.png";
+import logo3 from "../assets/Image/WelcomePage/logo3.png";
 
 function Header({
   caseNumber = 1,
@@ -10,12 +11,12 @@ function Header({
   onHowToPlay,
 }) {
   return (
-    <header className="w-full border-b border-cyan-100/90 bg-[#afdfff] px-4 py-5 sm:px-6">
+    <header className="w-full border-b border-cyan-100/90 bg-[#afdfff] px-4 py-3 sm:px-6">
       <div className="mx-auto flex w-full items-center justify-between gap-3">
         <img
-          src={logo}
+          src={logo3}
           alt="Inbox Inspector"
-          className="h-10 w-auto shrink-0 rounded-lg border border-slate-400/30 bg-white p-1.5 sm:h-15"
+          className="w-full max-w-[200px]"
         />
         <h1 className="min-w-0 text-center text-lg font-extrabold tracking-tight text-slate-800 sm:text-3xl">
           Case {caseNumber} of {totalCases}
