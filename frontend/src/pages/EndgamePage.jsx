@@ -5,6 +5,7 @@ import logo from "../assets/Image/WelcomePage/logo.png";
 import ScoreDisplay from "../components/ScoreDisplay";
 import Leaderboard from "../components/Leaderboard";
 import logo3 from "../assets/Image/WelcomePage/logo3.png";
+import pdfChecklist from '../assets/PDF/pdf.pdf';
 
 function EndgamePage() {
   const location = useLocation();
@@ -82,7 +83,7 @@ function EndgamePage() {
 
         <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row">
           <button
-            type="button"
+            onClick={() => window.open(pdfChecklist, '_blank')}
             className="inline-flex items-center gap-2 rounded-full bg-[#20d4d8] px-6 py-2.5 text-xl font-bold text-[#21326e] shadow-sm hover:bg-[#11c3c8] sm:text-2xl"
           >
             <IoMdDownload aria-hidden className="text-2xl" />
