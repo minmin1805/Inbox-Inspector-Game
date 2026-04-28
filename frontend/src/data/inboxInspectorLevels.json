@@ -65,51 +65,57 @@
     {
       "id": "case-02",
       "caseNumber": 2,
-      "channel": "email",
-      "theme": "school_security_legit",
+      "channel": "dm",
+      "theme": "community_job_legit",
       "correctVerdict": "legit",
       "graphics": {
         "giftIconBottomRight": false,
         "clickHereStyleButton": false,
-        "pdfAttachment": { "variant": "legit", "displayFileName": "Student_Login_Guide.pdf", "previewLabel": "Official guide (safe filename)" },
-        "tripPhotoAttachment": false
+        "pdfAttachment": { "variant": "legit", "displayFileName": "Interview_Info.pdf", "previewLabel": "Interview details" },
+        "tripPhotoAttachment": false,
+        "imageAttachment": {
+          "assetKey": "level2Riverside",
+          "caption": "Riverside Community Center",
+          "linkLabel": "Riverside Community Center",
+          "url": ""
+        }
       },
       "sender": {
-        "displayName": "Riverside High Portal",
-        "fromAddress": "noreply@riversidehs.edu",
-        "toPlaceholder": "you@student.edu"
+        "displayName": "Mia — Riverside Community Center",
+        "handle": "@riverside_cc_staff",
+        "avatarKey": "avatar-org-verified"
       },
       "message": {
         "weirdText": false,
-        "subject": "Routine security reminder",
-        "body": "Hi,\n\nThis is a routine reminder from your school portal. We detected your account has been active from multiple devices this month.\n\nPlease open the official school app directly to review recent login activity and confirm your trusted devices.\n\nIf you notice a device you do not recognize, sign out of other sessions in the app settings and update your password in-app.\n\nDo not reply with passwords or one-time codes.\n\nA short reference PDF is attached for how to enable two-step verification.",
-        "primaryCta": { "type": "open_official_app", "label": "Open in School App" },
-        "tags": ["School", "Security"]
+        "body": "Hi Alex,\n\nThanks for applying for the weekend assistant role at Riverside Community Center.\n\nWe'd like to invite you to a short in-person interview this week.\n\nPlease confirm your interview time using the link on our public website (Programs → Jobs). No payment is required.\n\nI've attached a one-page info sheet with what to bring and where to check in when you arrive.",
+        "primaryCta": null,
+        "tags": ["Interview", "Community"]
       },
       "toolFindings": {
-        "senderCheck": "Domain matches expected school email format.",
-        "linkPreview": "No sketchy payment link; directs to official app.",
-        "urgencyDetector": "No panic language; informational tone.",
-        "askDetector": "Does not ask for passwords/codes in email.",
-        "attachmentQrCheck": "PDF filename looks normal and matches a help document."
+        "senderCheck": "Organization identity is consistent and verifiable publicly.",
+        "linkPreview": "Directs to official site path—not a random pay portal.",
+        "urgencyDetector": "No pressure to pay or send secrets.",
+        "askDetector": "No request for passwords, codes, or ID photos in DM.",
+        "attachmentQrCheck": "PDF name is readable and matches an info sheet."
       },
-      "starterReply": "Thanks — I'll check login activity in the official school app.",
-      "coachTip": "Legit school notices usually push you to an official app and never ask for codes by email.",
+      "starterReply": "Thank you — I'll confirm through your official website.",
+      "coachTip": "Real hiring follow-ups can include documents—but fees and ID photos are red flags when rushed.",
       "feedbackWhyVerdict": {
         "heading": "Why: Legit",
         "points": [
-          "School domain + routine tone, not a secret deal or panic pay.",
-          "Pushes the official app; never asks for codes or money in a reply."
+          "Public org + in-person interview, sign-up via their public site (Jobs), not a random pay app.",
+          "No money, gift cards, or ID demanded in the DM for this step."
         ]
       },
       "feedbackIfYouSeeThis": {
         "heading": "In real life",
         "actions": [
-          "Open the school app from your device — not random links in email.",
-          "Sign out odd devices in the app; reset password only in the app.",
-          "Contact IT from the real school site if anything feels wrong."
+          "Use only the org’s own website to book time — type the URL or search it.",
+          "Show up with what the info sheet says; no wire or card fees up front.",
+          "If a follow-up DMs for money or ID, stop — call the place you looked up."
         ]
       }
+    
     },
     {
       "id": "case-03",
@@ -121,10 +127,7 @@
         "giftIconBottomRight": false,
         "clickHereStyleButton": false,
         "pdfAttachment": null,
-        "tripPhotoAttachment": false,
-        "baitPhotoAttachment": true,
-        "baitPhotoAssetKey": "baitPhotoRecruiting",
-        "baitPhotoCaption": "Screenshot: \"see, code was sent by mistake\""
+        "tripPhotoAttachment": false
       },
       "sender": {
         "displayName": "Maya (maybe)",
@@ -143,7 +146,7 @@
         "linkPreview": "No link; risk is the code request itself.",
         "urgencyDetector": "Repeated pressure: 'FAST', 'expires'.",
         "askDetector": "Requests your one-time verification code.",
-        "attachmentQrCheck": "A screenshot or image doesn't prove identity—scammers often use borrowed visuals to make urgent stories seem real."
+        "attachmentQrCheck": "No attachment."
       },
       "starterReply": "I can't share codes. I'll verify with you through your main account or in person.",
       "coachTip": "Never share OTP codes—codes are keys to your account.",
@@ -215,48 +218,49 @@
     {
       "id": "case-05",
       "caseNumber": 5,
-      "channel": "dm",
-      "theme": "community_job_legit",
+      "channel": "email",
+      "theme": "school_security_legit",
       "correctVerdict": "legit",
       "graphics": {
         "giftIconBottomRight": false,
         "clickHereStyleButton": false,
-        "pdfAttachment": { "variant": "legit", "displayFileName": "Interview_Info.pdf", "previewLabel": "Interview details" },
+        "pdfAttachment": { "variant": "legit", "displayFileName": "Student_Login_Guide.pdf", "previewLabel": "Official guide (safe filename)" },
         "tripPhotoAttachment": false
       },
       "sender": {
-        "displayName": "Mia — Riverside Community Center",
-        "handle": "@riverside_cc_staff",
-        "avatarKey": "avatar-org-verified"
+        "displayName": "Riverside High Portal",
+        "fromAddress": "noreply@riversidehs.edu",
+        "toPlaceholder": "you@student.edu"
       },
       "message": {
         "weirdText": false,
-        "body": "Hi Alex,\n\nThanks for applying for the weekend assistant role at Riverside Community Center.\n\nWe'd like to invite you to a short in-person interview this week.\n\nPlease confirm your interview time using the link on our public website (Programs → Jobs). No payment is required.\n\nI've attached a one-page info sheet with what to bring and where to check in when you arrive.",
-        "primaryCta": null,
-        "tags": ["Interview", "Community"]
+        "subject": "Routine security reminder",
+        "body": "Hi,\n\nThis is a routine reminder from your school portal. We detected your account has been active from multiple devices this month.\n\nPlease open the official school app directly to review recent login activity and confirm your trusted devices.\n\nIf you notice a device you do not recognize, sign out of other sessions in the app settings and update your password in-app.\n\nDo not reply with passwords or one-time codes.\n\nA short reference PDF is attached for how to enable two-step verification.",
+        "primaryCta": { "type": "open_official_app", "label": "Open in School App" },
+        "tags": ["School", "Security"]
       },
       "toolFindings": {
-        "senderCheck": "Organization identity is consistent and verifiable publicly.",
-        "linkPreview": "Directs to official site path—not a random pay portal.",
-        "urgencyDetector": "No pressure to pay or send secrets.",
-        "askDetector": "No request for passwords, codes, or ID photos in DM.",
-        "attachmentQrCheck": "PDF name is readable and matches an info sheet."
+        "senderCheck": "Domain matches expected school email format.",
+        "linkPreview": "No sketchy payment link; directs to official app.",
+        "urgencyDetector": "No panic language; informational tone.",
+        "askDetector": "Does not ask for passwords/codes in email.",
+        "attachmentQrCheck": "PDF filename looks normal and matches a help document."
       },
-      "starterReply": "Thank you — I'll confirm through your official website.",
-      "coachTip": "Real hiring follow-ups can include documents—but fees and ID photos are red flags when rushed.",
+      "starterReply": "Thanks — I'll check login activity in the official school app.",
+      "coachTip": "Legit school notices usually push you to an official app and never ask for codes by email.",
       "feedbackWhyVerdict": {
         "heading": "Why: Legit",
         "points": [
-          "Public org + in-person interview, sign-up via their public site (Jobs), not a random pay app.",
-          "No money, gift cards, or ID demanded in the DM for this step."
+          "School domain + routine tone, not a secret deal or panic pay.",
+          "Pushes the official app; never asks for codes or money in a reply."
         ]
       },
       "feedbackIfYouSeeThis": {
         "heading": "In real life",
         "actions": [
-          "Use only the org’s own website to book time — type the URL or search it.",
-          "Show up with what the info sheet says; no wire or card fees up front.",
-          "If a follow-up DMs for money or ID, stop — call the place you looked up."
+          "Open the school app from your device — not random links in email.",
+          "Sign out odd devices in the app; reset password only in the app.",
+          "Contact IT from the real school site if anything feels wrong."
         ]
       }
     },

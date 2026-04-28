@@ -1,6 +1,7 @@
 import React from "react";
 import clickHereButton from "../assets/Image/GamePage/clickHereButton.png";
 import checkIcon from "../assets/Image/GamePage/checkIcon.png";
+import level2RiversideImage from "../assets/Image/Levels/Level2/image.png";
 
 function clueActive(revealedTools, key) {
   return Array.isArray(revealedTools) && revealedTools.includes(key);
@@ -44,6 +45,9 @@ function DMWindow({ caseData, revealedTools = [] }) {
   const bodyLines = body.split("\n").filter((line) => line.length > 0);
   const showBaitPhoto = Boolean(graphics?.baitPhotoAttachment);
   const showTripPhoto = Boolean(graphics?.tripPhotoAttachment);
+  const imageAttachment = graphics?.imageAttachment || null;
+  const imageAttachmentSrc =
+    imageAttachment?.assetKey === "level2Riverside" ? level2RiversideImage : null;
   const highlightSender = clueActive(revealedTools, "senderCheck");
   const highlightLink = clueActive(revealedTools, "linkPreview");
   const highlightUrgency = clueActive(revealedTools, "urgencyDetector");
@@ -53,6 +57,10 @@ function DMWindow({ caseData, revealedTools = [] }) {
     if (!caseData?.id) return;
     const params = new URLSearchParams({ caseId: caseData.id, source });
     window.open(`/scam-preview?${params.toString()}`, "_blank", "noopener,noreferrer");
+  };
+  const openImageAttachmentLink = () => {
+    if (!imageAttachment?.url) return;
+    window.open(imageAttachment.url, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -131,7 +139,7 @@ function DMWindow({ caseData, revealedTools = [] }) {
             </div>
           </div>
 
-          {(showBaitPhoto || showTripPhoto) && (
+          {(imageAttachmentSrc || showBaitPhoto || showTripPhoto) && (
             <div className="flex justify-start">
               <div
                 className={[
@@ -140,19 +148,39 @@ function DMWindow({ caseData, revealedTools = [] }) {
                 ].join(" ")}
               >
                 {highlightAttachment ? <ToolCallout text="Attachment / QR reference" tone="attachment" /> : null}
-                <div
-                  className="h-36 w-full rounded-xl bg-cover bg-center sm:h-40"
-                  style={{
-                    backgroundImage: showTripPhoto
-                      ? "linear-gradient(120deg, #9ad5ff, #6ec4ff, #7ee7d8)"
-                      : "linear-gradient(120deg, #fbc2eb, #a6c1ee)",
-                  }}
-                />
-                <p className="mt-2 text-xs font-medium text-slate-600 sm:text-sm">
-                  {showTripPhoto
-                    ? "Photo preview from friend"
-                    : graphics?.baitPhotoCaption || "Team / housing preview"}
-                </p>
+                {imageAttachmentSrc ? (
+                  <button
+                    type="button"
+                    onClick={openImageAttachmentLink}
+                    className="w-full text-left"
+                  >
+                    <img
+                      src={imageAttachmentSrc}
+                      alt={imageAttachment?.caption || "Attachment preview"}
+                      className="h-36 w-full rounded-xl object-cover sm:h-40"
+                    />
+                    <p className="mt-2 text-sm font-semibold text-slate-800">
+                      {imageAttachment?.linkLabel || "Riverside Community Center"}
+                    </p>
+                    <p className="text-xs text-slate-500">Open official site</p>
+                  </button>
+                ) : (
+                  <>
+                    <div
+                      className="h-36 w-full rounded-xl bg-cover bg-center sm:h-40"
+                      style={{
+                        backgroundImage: showTripPhoto
+                          ? "linear-gradient(120deg, #9ad5ff, #6ec4ff, #7ee7d8)"
+                          : "linear-gradient(120deg, #fbc2eb, #a6c1ee)",
+                      }}
+                    />
+                    <p className="mt-2 text-xs font-medium text-slate-600 sm:text-sm">
+                      {showTripPhoto
+                        ? "Photo preview from friend"
+                        : graphics?.baitPhotoCaption || "Team / housing preview"}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           )}

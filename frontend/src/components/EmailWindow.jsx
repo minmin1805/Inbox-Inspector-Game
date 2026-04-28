@@ -2,6 +2,7 @@ import React from "react";
 import pdfImage from "../assets/Image/GamePage/pdfImage.png";
 import clickHereButton from "../assets/Image/GamePage/clickHereButton.png";
 import checkIcon from "../assets/Image/GamePage/checkIcon.png";
+import level2RiversideImage from "../assets/Image/Levels/Level2/image.png";
 
 function formatCaseTimestamp() {
   return new Date().toLocaleString([], {
@@ -37,6 +38,10 @@ function ToolCallout({ text, tone = "urgency" }) {
   );
 }
 
+const IMAGE_ATTACHMENT_ASSETS = {
+  level2Riverside: level2RiversideImage,
+};
+
 function EmailWindow({ caseData, revealedTools = [] }) {
   if (!caseData) {
     return (
@@ -48,6 +53,10 @@ function EmailWindow({ caseData, revealedTools = [] }) {
 
   const { sender, message, graphics } = caseData;
   const pdf = graphics?.pdfAttachment;
+  const imageAttachment = graphics?.imageAttachment || null;
+  const imageAttachmentSrc = imageAttachment?.assetKey
+    ? IMAGE_ATTACHMENT_ASSETS[imageAttachment.assetKey]
+    : null;
   const cta = message?.primaryCta;
   const highlightSender = clueActive(revealedTools, "senderCheck");
   const highlightLink = clueActive(revealedTools, "linkPreview");
@@ -58,6 +67,10 @@ function EmailWindow({ caseData, revealedTools = [] }) {
     if (!caseData?.id) return;
     const params = new URLSearchParams({ caseId: caseData.id, source });
     window.open(`/scam-preview?${params.toString()}`, "_blank", "noopener,noreferrer");
+  };
+  const openImageAttachmentLink = () => {
+    if (!imageAttachment?.url) return;
+    window.open(imageAttachment.url, "_blank", "noopener,noreferrer");
   };
 
   const bodyLines = (message?.body || "")
@@ -154,7 +167,27 @@ function EmailWindow({ caseData, revealedTools = [] }) {
 
           <div className="mt-8 flex flex-wrap items-end justify-between gap-4 border-t border-slate-100 pt-5">
             <div className="flex flex-wrap items-end gap-3">
-              {pdf ? (
+              {imageAttachmentSrc ? (
+                <button
+                  type="button"
+                  onClick={openImageAttachmentLink}
+                  className={[
+                    "max-w-[260px] rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-left transition hover:bg-white",
+                    highlightAttachment ? "ring-2 ring-amber-300/90" : "",
+                  ].join(" ")}
+                >
+                  {highlightAttachment ? <ToolCallout text="Attachment / QR reference" tone="attachment" /> : null}
+                  <img
+                    src={imageAttachmentSrc}
+                    alt={imageAttachment?.caption || "Attachment preview"}
+                    className="h-28 w-full rounded-lg object-cover sm:h-32"
+                  />
+                  <p className="mt-2 text-sm font-semibold text-slate-800">
+                    {imageAttachment?.linkLabel || "Riverside Community Center"}
+                  </p>
+                  <p className="text-xs text-slate-500">Open official site</p>
+                </button>
+              ) : pdf ? (
                 <div
                   className={[
                     "rounded-xl border border-slate-200 bg-slate-50 p-2.5",
