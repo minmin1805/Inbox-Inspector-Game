@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import levels from "../data/inboxInspectorLevels.json";
 
 const PAGE_BY_THEME = {
@@ -84,11 +84,19 @@ const BADGE_LABEL = {
 };
 
 function ScamPreviewPage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const caseId = searchParams.get("caseId");
   const source = searchParams.get("source") || "link";
   const caseData = levels.cases.find((c) => c.id === caseId);
   const page = caseData ? PAGE_BY_THEME[caseData.theme] : null;
+
+  const handleCloseAndExit = () => {
+    // Works when opened by window.open from the game tab.
+    window.close();
+    // Fallback for browsers that block close on non-script-opened tabs.
+    setTimeout(() => navigate("/game"), 120);
+  };
 
   if (!caseData || !page) {
     return (
@@ -166,12 +174,13 @@ function ScamPreviewPage() {
         </section>
 
         <div className="flex justify-end">
-          <Link
-            to="/game"
+          <button
+            type="button"
+            onClick={handleCloseAndExit}
             className="rounded-xl bg-sky-600 px-4 py-2 text-sm font-bold text-white hover:bg-sky-700"
           >
-            Return to game
-          </Link>
+            Close and return to game
+          </button>
         </div>
       </div>
     </main>
