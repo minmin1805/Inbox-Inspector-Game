@@ -71,7 +71,7 @@
       "graphics": {
         "giftIconBottomRight": false,
         "clickHereStyleButton": false,
-        "pdfAttachment": { "variant": "legit", "displayFileName": "Interview_Info.pdf", "previewLabel": "Interview details" },
+        "pdfAttachment": null,
         "tripPhotoAttachment": false,
         "imageAttachment": {
           "assetKey": "level2Riverside",
@@ -87,7 +87,7 @@
       },
       "message": {
         "weirdText": false,
-        "body": "Hi Alex,\n\nThanks for applying for the weekend assistant role at Riverside Community Center.\n\nWe'd like to invite you to a short in-person interview this week.\n\nPlease confirm your interview time using the link on our public website (Programs → Jobs). No payment is required.\n\nI've attached a one-page info sheet with what to bring and where to check in when you arrive.",
+        "body": "Hi Alex,\n\nThanks for applying for the weekend assistant role at Riverside Community Center.\n\nWe'd like to invite you to a short in-person interview this week.\n\nPlease confirm your interview time through our official site (Programs → Jobs). No payment is required.\n\nI also shared our community center image bubble below — tap it to open the official page and confirm details.",
         "primaryCta": null,
         "tags": ["Interview", "Community"]
       },
@@ -96,7 +96,7 @@
         "linkPreview": "Directs to official site path—not a random pay portal.",
         "urgencyDetector": "No pressure to pay or send secrets.",
         "askDetector": "No request for passwords, codes, or ID photos in DM.",
-        "attachmentQrCheck": "PDF name is readable and matches an info sheet."
+        "attachmentQrCheck": "Image bubble links to the org's official page; verify domain before trusting."
       },
       "starterReply": "Thank you — I'll confirm through your official website.",
       "coachTip": "Real hiring follow-ups can include documents—but fees and ID photos are red flags when rushed.",

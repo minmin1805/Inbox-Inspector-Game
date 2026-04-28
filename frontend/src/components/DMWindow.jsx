@@ -2,6 +2,8 @@ import React from "react";
 import clickHereButton from "../assets/Image/GamePage/clickHereButton.png";
 import checkIcon from "../assets/Image/GamePage/checkIcon.png";
 import level2RiversideImage from "../assets/Image/Levels/Level2/image.png";
+import level7Image from "../assets/Image/Levels/Level7/image.png";
+import level9Image from "../assets/Image/Levels/Level9/image.png";
 
 function clueActive(revealedTools, key) {
   return Array.isArray(revealedTools) && revealedTools.includes(key);
@@ -48,6 +50,7 @@ function DMWindow({ caseData, revealedTools = [] }) {
   const imageAttachment = graphics?.imageAttachment || null;
   const imageAttachmentSrc =
     imageAttachment?.assetKey === "level2Riverside" ? level2RiversideImage : null;
+  const dmPreviewImageSrc = showTripPhoto ? level9Image : showBaitPhoto ? level7Image : null;
   const highlightSender = clueActive(revealedTools, "senderCheck");
   const highlightLink = clueActive(revealedTools, "linkPreview");
   const highlightUrgency = clueActive(revealedTools, "urgencyDetector");
@@ -166,14 +169,22 @@ function DMWindow({ caseData, revealedTools = [] }) {
                   </button>
                 ) : (
                   <>
-                    <div
-                      className="h-36 w-full rounded-xl bg-cover bg-center sm:h-40"
-                      style={{
-                        backgroundImage: showTripPhoto
-                          ? "linear-gradient(120deg, #9ad5ff, #6ec4ff, #7ee7d8)"
-                          : "linear-gradient(120deg, #fbc2eb, #a6c1ee)",
-                      }}
-                    />
+                    {dmPreviewImageSrc ? (
+                      <img
+                        src={dmPreviewImageSrc}
+                        alt={showTripPhoto ? "Friend trip photo preview" : "Recruiting preview image"}
+                        className="h-36 w-full rounded-xl object-cover sm:h-40"
+                      />
+                    ) : (
+                      <div
+                        className="h-36 w-full rounded-xl bg-cover bg-center sm:h-40"
+                        style={{
+                          backgroundImage: showTripPhoto
+                            ? "linear-gradient(120deg, #9ad5ff, #6ec4ff, #7ee7d8)"
+                            : "linear-gradient(120deg, #fbc2eb, #a6c1ee)",
+                        }}
+                      />
+                    )}
                     <p className="mt-2 text-xs font-medium text-slate-600 sm:text-sm">
                       {showTripPhoto
                         ? "Photo preview from friend"
