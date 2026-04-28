@@ -49,6 +49,11 @@ function DMWindow({ caseData, revealedTools = [] }) {
   const highlightUrgency = clueActive(revealedTools, "urgencyDetector");
   const highlightAsk = clueActive(revealedTools, "askDetector");
   const highlightAttachment = clueActive(revealedTools, "attachmentQrCheck");
+  const openScamPreview = (source = "link") => {
+    if (!caseData?.id) return;
+    const params = new URLSearchParams({ caseId: caseData.id, source });
+    window.open(`/scam-preview?${params.toString()}`, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <section className="h-full w-full min-w-0">
@@ -156,13 +161,20 @@ function DMWindow({ caseData, revealedTools = [] }) {
             <div className="flex justify-start">
               <a
                 href="#"
-                onClick={(e) => e.preventDefault()}
+                onClick={(e) => {
+                  e.preventDefault();
+                  openScamPreview("shown-link");
+                }}
                 className={[
                   "max-w-[82%] break-all rounded-xl border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-800 underline decoration-2",
                   highlightLink ? "ring-2 ring-amber-300/90" : "",
                 ].join(" ")}
               >
-                {highlightLink ? <ToolCallout text="Link Preview reference" tone="link" /> : null}
+                {highlightLink ? (
+                  <div className="mb-1">
+                    <ToolCallout text="Link Preview reference" tone="link" />
+                  </div>
+                ) : null}
                 {message.linkShown}
               </a>
             </div>
@@ -176,22 +188,39 @@ function DMWindow({ caseData, revealedTools = [] }) {
                   highlightLink ? "ring-2 ring-amber-300/90" : "",
                 ].join(" ")}
               >
-                {highlightLink ? <ToolCallout text="Link Preview reference" tone="link" /> : null}
+                {highlightLink ? (
+                  <div className="mb-1">
+                    <ToolCallout text="Link Preview reference" tone="link" />
+                  </div>
+                ) : null}
                 {showClickStyle && cta.type === "click_here_button" ? (
-                  <img
-                    src={clickHereButton}
-                    alt="Click here"
-                    className="h-11 w-auto max-w-40 object-contain sm:h-12 xl:h-14 xl:max-w-48"
-                  />
+                  <button
+                    type="button"
+                    onClick={() => openScamPreview("cta-click-here")}
+                    className="rounded-lg p-0.5 transition hover:bg-slate-100"
+                  >
+                    <img
+                      src={clickHereButton}
+                      alt="Click here"
+                      className="h-11 w-auto max-w-40 object-contain sm:h-12 xl:h-14 xl:max-w-48"
+                    />
+                  </button>
                 ) : cta.type === "pay_button" ? (
                   <button
                     type="button"
+                    onClick={() => openScamPreview("cta-pay")}
                     className="rounded-full bg-amber-400 px-4 py-2 text-sm font-extrabold text-slate-900 shadow"
                   >
                     {cta.label}
                   </button>
                 ) : cta.label ? (
-                  <p className="text-sm text-slate-700">{cta.label}</p>
+                  <button
+                    type="button"
+                    onClick={() => openScamPreview("cta-text")}
+                    className="text-left text-sm text-slate-700 underline"
+                  >
+                    {cta.label}
+                  </button>
                 ) : null}
                 <p className="mt-1 text-right text-[10px] text-slate-400 sm:text-xs">
                   now

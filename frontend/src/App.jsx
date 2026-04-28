@@ -4,6 +4,7 @@ import WelcomePage from "./pages/WelcomePage";
 import InstructionPage from "./pages/InstructionPage";
 import GamePage from "./pages/GamePage";
 import EndgamePage from "./pages/EndgamePage";
+import ScamPreviewPage from "./pages/ScamPreviewPage";
 import MusicToggleButton from './components/MusicToggleButton'
 import { SoundProvider, useSounds } from './context/SoundContext'
 import { MusicProvider, useMusic } from './context/MusicContext'
@@ -43,6 +44,7 @@ function AppContent() {
         <Route path="/instruction" element={<InstructionPage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/endgame" element={<EndgamePage />} />
+        <Route path="/scam-preview" element={<ScamPreviewPage />} />
       </Routes>
     </div>
   )

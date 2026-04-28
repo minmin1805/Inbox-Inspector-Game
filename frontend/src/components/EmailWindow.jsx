@@ -54,6 +54,11 @@ function EmailWindow({ caseData, revealedTools = [] }) {
   const highlightUrgency = clueActive(revealedTools, "urgencyDetector");
   const highlightAsk = clueActive(revealedTools, "askDetector");
   const highlightAttachment = clueActive(revealedTools, "attachmentQrCheck");
+  const openScamPreview = (source = "link") => {
+    if (!caseData?.id) return;
+    const params = new URLSearchParams({ caseId: caseData.id, source });
+    window.open(`/scam-preview?${params.toString()}`, "_blank", "noopener,noreferrer");
+  };
 
   const bodyLines = (message?.body || "")
     .split("\n")
@@ -129,13 +134,21 @@ function EmailWindow({ caseData, revealedTools = [] }) {
                 highlightLink ? "ring-2 ring-amber-300/90" : "",
               ].join(" ")}
             >
-              {highlightLink ? <ToolCallout text="Link Preview reference" tone="link" /> : null}
+              {highlightLink ? (
+                <div className="mb-1">
+                  <ToolCallout text="Link Preview reference" tone="link" />
+                </div>
+              ) : null}
               <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
                 Link shown
               </p>
-              <p className="mt-0.5 break-all text-sm text-sky-800">
+              <button
+                type="button"
+                onClick={() => openScamPreview("shown-link")}
+                className="mt-0.5 break-all text-left text-sm text-sky-800 underline decoration-2"
+              >
                 {message.linkShown}
-              </p>
+              </button>
             </div>
           ) : null}
 
@@ -181,25 +194,37 @@ function EmailWindow({ caseData, revealedTools = [] }) {
                   highlightLink ? "rounded-lg ring-2 ring-amber-300/90" : "",
                 ].join(" ")}
               >
-                {highlightLink ? <ToolCallout text="Link Preview reference" tone="link" /> : null}
+                {highlightLink ? (
+                  <div className="mb-1 w-full">
+                    <ToolCallout text="Link Preview reference" tone="link" />
+                  </div>
+                ) : null}
                 {cta.type === "pay_button" && (
                   <button
                     type="button"
+                    onClick={() => openScamPreview("cta-pay")}
                     className="rounded-lg bg-amber-400 px-4 py-2 text-sm font-extrabold tracking-wide text-slate-900 shadow-sm ring-1 ring-amber-500/30 transition hover:bg-amber-300"
                   >
                     {cta.label}
                   </button>
                 )}
                 {cta.type === "click_here_button" && (
-                  <img
-                    src={clickHereButton}
-                    alt="Click here"
-                    className="h-12 w-auto max-w-36 object-contain sm:h-14 xl:h-16 xl:max-w-44"
-                  />
+                  <button
+                    type="button"
+                    onClick={() => openScamPreview("cta-click-here")}
+                    className="rounded-lg p-0.5 transition hover:bg-slate-100"
+                  >
+                    <img
+                      src={clickHereButton}
+                      alt="Click here"
+                      className="h-12 w-auto max-w-36 object-contain sm:h-14 xl:h-16 xl:max-w-44"
+                    />
+                  </button>
                 )}
                 {cta.type === "open_official_app" && (
                   <button
                     type="button"
+                    onClick={() => openScamPreview("cta-open-app")}
                     className="rounded-lg bg-sky-500 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-sky-600"
                   >
                     {cta.label}
@@ -208,6 +233,7 @@ function EmailWindow({ caseData, revealedTools = [] }) {
                 {cta.type === "link_text" && (
                   <button
                     type="button"
+                    onClick={() => openScamPreview("cta-link-text")}
                     className="text-sm font-semibold text-sky-700 underline decoration-2 hover:text-sky-900"
                   >
                     {cta.label}
