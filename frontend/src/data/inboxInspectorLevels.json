@@ -113,7 +113,7 @@
     },
     {
       "id": "case-03",
-      "caseNumber": 6,
+      "caseNumber": 3,
       "channel": "dm",
       "theme": "account_takeover_otp",
       "correctVerdict": "phishing",
@@ -121,7 +121,10 @@
         "giftIconBottomRight": false,
         "clickHereStyleButton": false,
         "pdfAttachment": null,
-        "tripPhotoAttachment": false
+        "tripPhotoAttachment": false,
+        "baitPhotoAttachment": true,
+        "baitPhotoAssetKey": "baitPhotoRecruiting",
+        "baitPhotoCaption": "Screenshot: \"see, code was sent by mistake\""
       },
       "sender": {
         "displayName": "Maya (maybe)",
@@ -140,7 +143,7 @@
         "linkPreview": "No link; risk is the code request itself.",
         "urgencyDetector": "Repeated pressure: 'FAST', 'expires'.",
         "askDetector": "Requests your one-time verification code.",
-        "attachmentQrCheck": "No attachment."
+        "attachmentQrCheck": "A screenshot or image doesn't prove identity—scammers often use borrowed visuals to make urgent stories seem real."
       },
       "starterReply": "I can't share codes. I'll verify with you through your main account or in person.",
       "coachTip": "Never share OTP codes—codes are keys to your account.",
@@ -259,7 +262,7 @@
     },
     {
       "id": "case-06",
-      "caseNumber": 3,
+      "caseNumber": 6,
       "channel": "email",
       "theme": "delivery_sketchy",
       "correctVerdict": "sketchy_verify",
