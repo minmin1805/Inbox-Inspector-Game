@@ -59,7 +59,7 @@ function DMWindow({ caseData, revealedTools = [] }) {
     <section className="h-full w-full min-w-0">
       <div className="mb-3 min-h-13 flex items-center gap-2 pl-0.5 sm:min-h-14">
         <img src={checkIcon} alt="" className="h-9 w-9 shrink-0" aria-hidden />
-        <h2 className="text-lg font-extrabold text-slate-800 sm:text-2xl">
+        <h2 className="text-xl font-extrabold text-slate-800 sm:text-2xl xl:text-3xl">
           Incoming DM
         </h2>
       </div>

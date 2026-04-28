@@ -54,7 +54,7 @@ function GamePageContent() {
               </div>
             )}
           </div>
-          <div className="min-w-0 lg:col-span-5">
+          <div className="min-w-0 lg:col-span-5 lg:mt-10">
             <InvestigationToolsBar
               caseData={currentCase}
               onRevealedToolsChange={setRevealedTools}
