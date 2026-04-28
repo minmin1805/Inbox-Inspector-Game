@@ -16,9 +16,22 @@ function clueActive(revealedTools, key) {
   return Array.isArray(revealedTools) && revealedTools.includes(key);
 }
 
-function ToolCallout({ text }) {
+const CALLOUT_TONE = {
+  sender: "border-sky-300 bg-sky-100 text-sky-900",
+  link: "border-teal-300 bg-teal-100 text-teal-900",
+  urgency: "border-amber-300 bg-amber-100 text-amber-900",
+  ask: "border-blue-400 bg-blue-100 text-blue-900",
+  attachment: "border-purple-300 bg-purple-100 text-purple-900",
+};
+
+function ToolCallout({ text, tone = "urgency" }) {
   return (
-    <span className="mb-1.5 mr-1.5 inline-flex rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-900">
+    <span
+      className={[
+        "mb-1.5 mr-1.5 inline-flex rounded-full border px-2 py-0.5 text-[11px] font-bold",
+        CALLOUT_TONE[tone] || CALLOUT_TONE.urgency,
+      ].join(" ")}
+    >
       {text}
     </span>
   );
@@ -75,7 +88,7 @@ function EmailWindow({ caseData, revealedTools = [] }) {
             ].join(" ")}
           >
             <div className="min-w-0 px-1">
-              {highlightSender ? <ToolCallout text="Sender Check reference" /> : null}
+              {highlightSender ? <ToolCallout text="Sender Check reference" tone="sender" /> : null}
               <p className="truncate text-sm font-semibold text-slate-800 sm:text-base">
                 {message?.subject || "(no subject)"}
               </p>
@@ -100,8 +113,8 @@ function EmailWindow({ caseData, revealedTools = [] }) {
               highlightUrgency || highlightAsk ? "rounded-xl p-2 ring-2 ring-amber-300/90" : "",
             ].join(" ")}
           >
-            {highlightUrgency ? <ToolCallout text="Urgency Detector reference" /> : null}
-            {highlightAsk ? <ToolCallout text="Ask Detector reference" /> : null}
+            {highlightUrgency ? <ToolCallout text="Urgency Detector reference" tone="urgency" /> : null}
+            {highlightAsk ? <ToolCallout text="Ask Detector reference" tone="ask" /> : null}
             {bodyLines.map((line, i) => (
               <p key={i} className="text-sm sm:text-[15px] xl:text-lg">
                 {line}
@@ -116,7 +129,7 @@ function EmailWindow({ caseData, revealedTools = [] }) {
                 highlightLink ? "ring-2 ring-amber-300/90" : "",
               ].join(" ")}
             >
-              {highlightLink ? <ToolCallout text="Link Preview reference" /> : null}
+              {highlightLink ? <ToolCallout text="Link Preview reference" tone="link" /> : null}
               <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
                 Link shown
               </p>
@@ -135,7 +148,7 @@ function EmailWindow({ caseData, revealedTools = [] }) {
                     highlightAttachment ? "ring-2 ring-amber-300/90" : "",
                   ].join(" ")}
                 >
-                  {highlightAttachment ? <ToolCallout text="Attachment / QR reference" /> : null}
+                  {highlightAttachment ? <ToolCallout text="Attachment / QR reference" tone="attachment" /> : null}
                   <div className="flex items-center gap-2">
                     <img
                       src={pdfImage}
@@ -168,7 +181,7 @@ function EmailWindow({ caseData, revealedTools = [] }) {
                   highlightLink ? "rounded-lg ring-2 ring-amber-300/90" : "",
                 ].join(" ")}
               >
-                {highlightLink ? <ToolCallout text="Link Preview reference" /> : null}
+                {highlightLink ? <ToolCallout text="Link Preview reference" tone="link" /> : null}
                 {cta.type === "pay_button" && (
                   <button
                     type="button"
