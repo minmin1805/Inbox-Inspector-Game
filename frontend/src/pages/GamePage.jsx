@@ -23,6 +23,7 @@ function GamePageContent() {
     showFeedbackPopup,
     showInstructionPopup,
     feedbackData,
+    revealedTools,
     setRevealedTools,
     handleInvestigationSubmit,
     handleFeedbackClose,
@@ -45,11 +46,11 @@ function GamePageContent() {
           <div className="min-w-0 lg:col-span-7">
             {isEmail ? (
               <div className="lg:mt-10">
-                <EmailWindow caseData={currentCase} />
+                <EmailWindow caseData={currentCase} revealedTools={revealedTools} />
               </div>
             ) : (
               <div className="lg:mt-10">
-                <DMWindow caseData={currentCase} />
+                <DMWindow caseData={currentCase} revealedTools={revealedTools} />
               </div>
             )}
           </div>

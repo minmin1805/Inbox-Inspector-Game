@@ -37,18 +37,26 @@ function InvestigationToolsBar({ caseData, onRevealedToolsChange }) {
 
   return (
     <aside className="flex h-full w-full min-w-0 flex-col">
-      <div className="mb-3 min-h-13 text-left sm:min-h-14">
-        <h2 className="text-lg font-extrabold text-slate-800 sm:text-xl xl:text-2xl">
-          Investigation Tools
-        </h2>
-        <p className="text-xs text-slate-600 sm:text-sm xl:text-base">
-          Click each tool to reveal clues. {revealedTools.length}/
-          {MAX_REVEALS_PER_CASE} used.
-        </p>
-      </div>
+      <div className="rounded-2xl border border-slate-300/90 bg-white p-3 text-left shadow-sm sm:p-4">
+        <div className="mb-3 border-b border-slate-200 pb-3">
+          <h2 className="text-xl font-extrabold text-slate-800 sm:text-2xl xl:text-3xl">
+            Investigation Tools
+          </h2>
+          <div className="mt-2 flex items-center justify-between gap-3">
+            <p className="text-sm font-medium text-slate-700 sm:text-base">
+              Click tools to reveal clues
+            </p>
+            <span className="shrink-0 rounded-full border border-cyan-300 bg-white px-3 py-1 text-sm font-extrabold text-cyan-800 sm:text-base">
+              {revealedTools.length}/{MAX_REVEALS_PER_CASE} used
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-slate-600 sm:text-sm">
+            You can reveal up to {MAX_REVEALS_PER_CASE} per case.
+          </p>
+        </div>
 
-      <div className="space-y-2.5 rounded-2xl border border-slate-300/90 bg-white p-3.5 shadow-sm sm:p-4">
-        {TOOL_CONFIG.map((tool) => {
+        <div className="space-y-2.5">
+          {TOOL_CONFIG.map((tool) => {
           const text = findings?.[tool.key] || "—";
           const isRevealed = revealedTools.includes(tool.key);
           const revealLimitReached =
@@ -75,7 +83,7 @@ function InvestigationToolsBar({ caseData, onRevealedToolsChange }) {
                 }`}
               >
                 {tool.icon === "qr" ? (
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-100 text-cyan-800 xl:h-11 xl:w-11">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-200 text-purple-800 xl:h-11 xl:w-11">
                     <FaQrcode className="h-6 w-6 xl:h-7 xl:w-7" />
                   </span>
                 ) : (
@@ -108,6 +116,7 @@ function InvestigationToolsBar({ caseData, onRevealedToolsChange }) {
             </div>
           );
         })}
+        </div>
       </div>
     </aside>
   );

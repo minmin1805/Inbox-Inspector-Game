@@ -345,6 +345,7 @@ export function InboxInspectorProvider({ children }) {
       showFeedbackPopup,
       showInstructionPopup,
       feedbackData,
+      revealedTools,
       setRevealedTools,
       handleInvestigationSubmit,
       handleFeedbackClose,
@@ -362,6 +363,7 @@ export function InboxInspectorProvider({ children }) {
       showFeedbackPopup,
       showInstructionPopup,
       feedbackData,
+      revealedTools,
       handleInvestigationSubmit,
       handleFeedbackClose,
     ]

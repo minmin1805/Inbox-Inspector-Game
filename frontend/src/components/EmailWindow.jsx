@@ -12,7 +12,19 @@ function formatCaseTimestamp() {
   });
 }
 
-function EmailWindow({ caseData }) {
+function clueActive(revealedTools, key) {
+  return Array.isArray(revealedTools) && revealedTools.includes(key);
+}
+
+function ToolCallout({ text }) {
+  return (
+    <span className="mb-1.5 mr-1.5 inline-flex rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-900">
+      {text}
+    </span>
+  );
+}
+
+function EmailWindow({ caseData, revealedTools = [] }) {
   if (!caseData) {
     return (
       <div className="rounded-3xl border border-slate-300/80 bg-white p-6 shadow-sm">
@@ -24,6 +36,11 @@ function EmailWindow({ caseData }) {
   const { sender, message, graphics } = caseData;
   const pdf = graphics?.pdfAttachment;
   const cta = message?.primaryCta;
+  const highlightSender = clueActive(revealedTools, "senderCheck");
+  const highlightLink = clueActive(revealedTools, "linkPreview");
+  const highlightUrgency = clueActive(revealedTools, "urgencyDetector");
+  const highlightAsk = clueActive(revealedTools, "askDetector");
+  const highlightAttachment = clueActive(revealedTools, "attachmentQrCheck");
 
   const bodyLines = (message?.body || "")
     .split("\n")
@@ -51,8 +68,14 @@ function EmailWindow({ caseData }) {
         </div>
 
         <div className="p-5 sm:p-6 xl:p-7">
-          <div className="mb-5 flex items-start justify-between gap-3 border-b border-slate-200/90 pb-4">
-            <div className="min-w-0">
+          <div
+            className={[
+              "mb-5 flex items-start justify-between gap-3 border-b border-slate-200/90 pb-4",
+              highlightSender ? "rounded-xl ring-2 ring-amber-300/90" : "",
+            ].join(" ")}
+          >
+            <div className="min-w-0 px-1">
+              {highlightSender ? <ToolCallout text="Sender Check reference" /> : null}
               <p className="truncate text-sm font-semibold text-slate-800 sm:text-base">
                 {message?.subject || "(no subject)"}
               </p>
@@ -71,7 +94,14 @@ function EmailWindow({ caseData }) {
             </span>
           </div>
 
-          <div className="space-y-4 text-left leading-relaxed text-slate-800 xl:space-y-5">
+          <div
+            className={[
+              "space-y-4 text-left leading-relaxed text-slate-800 xl:space-y-5",
+              highlightUrgency || highlightAsk ? "rounded-xl p-2 ring-2 ring-amber-300/90" : "",
+            ].join(" ")}
+          >
+            {highlightUrgency ? <ToolCallout text="Urgency Detector reference" /> : null}
+            {highlightAsk ? <ToolCallout text="Ask Detector reference" /> : null}
             {bodyLines.map((line, i) => (
               <p key={i} className="text-sm sm:text-[15px] xl:text-lg">
                 {line}
@@ -80,7 +110,13 @@ function EmailWindow({ caseData }) {
           </div>
 
           {message?.linkShown ? (
-            <div className="mt-4 rounded-xl border border-sky-100 bg-sky-50/70 px-3 py-2">
+            <div
+              className={[
+                "mt-4 rounded-xl border border-sky-100 bg-sky-50/70 px-3 py-2",
+                highlightLink ? "ring-2 ring-amber-300/90" : "",
+              ].join(" ")}
+            >
+              {highlightLink ? <ToolCallout text="Link Preview reference" /> : null}
               <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
                 Link shown
               </p>
@@ -93,7 +129,13 @@ function EmailWindow({ caseData }) {
           <div className="mt-8 flex flex-wrap items-end justify-between gap-4 border-t border-slate-100 pt-5">
             <div className="flex flex-wrap items-end gap-3">
               {pdf ? (
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5">
+                <div
+                  className={[
+                    "rounded-xl border border-slate-200 bg-slate-50 p-2.5",
+                    highlightAttachment ? "ring-2 ring-amber-300/90" : "",
+                  ].join(" ")}
+                >
+                  {highlightAttachment ? <ToolCallout text="Attachment / QR reference" /> : null}
                   <div className="flex items-center gap-2">
                     <img
                       src={pdfImage}
@@ -120,7 +162,13 @@ function EmailWindow({ caseData }) {
             </div>
 
             {cta ? (
-              <div className="ml-auto flex shrink-0 items-center">
+              <div
+                className={[
+                  "ml-auto flex shrink-0 items-center",
+                  highlightLink ? "rounded-lg ring-2 ring-amber-300/90" : "",
+                ].join(" ")}
+              >
+                {highlightLink ? <ToolCallout text="Link Preview reference" /> : null}
                 {cta.type === "pay_button" && (
                   <button
                     type="button"

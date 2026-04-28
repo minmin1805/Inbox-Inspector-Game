@@ -2,7 +2,19 @@ import React from "react";
 import clickHereButton from "../assets/Image/GamePage/clickHereButton.png";
 import checkIcon from "../assets/Image/GamePage/checkIcon.png";
 
-function DMWindow({ caseData }) {
+function clueActive(revealedTools, key) {
+  return Array.isArray(revealedTools) && revealedTools.includes(key);
+}
+
+function ToolCallout({ text }) {
+  return (
+    <span className="mb-1.5 mr-1.5 inline-flex rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-900">
+      {text}
+    </span>
+  );
+}
+
+function DMWindow({ caseData, revealedTools = [] }) {
   if (!caseData) {
     return (
       <div className="rounded-3xl border border-slate-300/80 bg-white p-6 shadow-sm">
@@ -19,6 +31,11 @@ function DMWindow({ caseData }) {
   const bodyLines = body.split("\n").filter((line) => line.length > 0);
   const showBaitPhoto = Boolean(graphics?.baitPhotoAttachment);
   const showTripPhoto = Boolean(graphics?.tripPhotoAttachment);
+  const highlightSender = clueActive(revealedTools, "senderCheck");
+  const highlightLink = clueActive(revealedTools, "linkPreview");
+  const highlightUrgency = clueActive(revealedTools, "urgencyDetector");
+  const highlightAsk = clueActive(revealedTools, "askDetector");
+  const highlightAttachment = clueActive(revealedTools, "attachmentQrCheck");
 
   return (
     <section className="h-full w-full min-w-0">
@@ -30,12 +47,18 @@ function DMWindow({ caseData }) {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-slate-300/90 bg-white shadow-sm">
-        <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3 sm:px-5">
+        <div
+          className={[
+            "flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3 sm:px-5",
+            highlightSender ? "ring-2 ring-amber-300/80 ring-inset" : "",
+          ].join(" ")}
+        >
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-lg font-black text-indigo-900">
               {sender?.displayName?.[0]?.toUpperCase() || "?"}
             </div>
             <div className="min-w-0">
+              {highlightSender ? <ToolCallout text="Sender Check reference" /> : null}
               <p className="truncate text-sm font-bold text-slate-900 sm:text-base">
                 {sender?.displayName}
               </p>
@@ -63,7 +86,14 @@ function DMWindow({ caseData }) {
           </div>
 
           <div className="flex justify-start">
-            <div className="max-w-[82%] rounded-2xl rounded-bl-md bg-[#dff3ff] px-3.5 py-3 shadow-sm">
+            <div
+              className={[
+                "max-w-[82%] rounded-2xl rounded-bl-md bg-[#dff3ff] px-3.5 py-3 shadow-sm",
+                highlightUrgency || highlightAsk ? "ring-2 ring-amber-300/90" : "",
+              ].join(" ")}
+            >
+              {highlightUrgency ? <ToolCallout text="Urgency Detector reference" /> : null}
+              {highlightAsk ? <ToolCallout text="Ask Detector reference" /> : null}
               {headline ? (
                 <p className="mb-2 text-lg font-extrabold leading-tight text-slate-900 sm:text-xl xl:text-2xl">
                   {headline}
@@ -85,7 +115,13 @@ function DMWindow({ caseData }) {
 
           {(showBaitPhoto || showTripPhoto) && (
             <div className="flex justify-start">
-              <div className="max-w-[80%] rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+              <div
+                className={[
+                  "max-w-[80%] rounded-2xl border border-slate-200 bg-white p-2 shadow-sm",
+                  highlightAttachment ? "ring-2 ring-amber-300/90" : "",
+                ].join(" ")}
+              >
+                {highlightAttachment ? <ToolCallout text="Attachment / QR reference" /> : null}
                 <div
                   className="h-36 w-full rounded-xl bg-cover bg-center sm:h-40"
                   style={{
@@ -108,8 +144,12 @@ function DMWindow({ caseData }) {
               <a
                 href="#"
                 onClick={(e) => e.preventDefault()}
-                className="max-w-[82%] break-all rounded-xl border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-800 underline decoration-2"
+                className={[
+                  "max-w-[82%] break-all rounded-xl border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-800 underline decoration-2",
+                  highlightLink ? "ring-2 ring-amber-300/90" : "",
+                ].join(" ")}
               >
+                {highlightLink ? <ToolCallout text="Link Preview reference" /> : null}
                 {message.linkShown}
               </a>
             </div>
@@ -117,7 +157,13 @@ function DMWindow({ caseData }) {
 
           {cta ? (
             <div className="flex justify-start">
-              <div className="max-w-[82%] rounded-2xl rounded-bl-md bg-white px-3 py-2.5 shadow-sm">
+              <div
+                className={[
+                  "max-w-[82%] rounded-2xl rounded-bl-md bg-white px-3 py-2.5 shadow-sm",
+                  highlightLink ? "ring-2 ring-amber-300/90" : "",
+                ].join(" ")}
+              >
+                {highlightLink ? <ToolCallout text="Link Preview reference" /> : null}
                 {showClickStyle && cta.type === "click_here_button" ? (
                   <img
                     src={clickHereButton}
