@@ -124,6 +124,10 @@ function WelcomePage() {
             </ul>
           </article>
         </section>
+
+        <p className="mt-8 text-xs font-medium tracking-wide text-[#3e4d78]/80 sm:text-sm">
+          Design &amp; development by Minh Doan
+        </p>
       </main>
     </div>
   );

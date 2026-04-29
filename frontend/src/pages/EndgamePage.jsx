@@ -96,6 +96,10 @@ function EndgamePage() {
             Exit To Menu
           </button>
         </div>
+
+        <p className="mt-5 text-center text-xs font-medium tracking-wide text-[#3e4d78]/80 sm:text-sm">
+          Design &amp; development by Minh Doan
+        </p>
       </div>
     </div>
   );
