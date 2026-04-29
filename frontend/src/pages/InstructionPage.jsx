@@ -51,7 +51,8 @@ function InstructionPage() {
     {
       n: 4,
       title: "Write a safe reply",
-      blurb: "Write what you would say (or do) next. Do not share passwords, codes, payment info, or ID photos in your reply.",
+      blurb:
+        "Use 1-2 sentences: (1) what risky step you refuse, (2) how you will verify safely. Example: I won't share codes. I'll verify in the official app.",
       tone: "teal",
     },
   ];
@@ -175,54 +176,38 @@ function InstructionPage() {
             </ul>
           </section>
 
-          {/* How a round works + scoring summary */}
+          {/* Reply box guide + scoring summary */}
           <div className="space-y-8">
-            <section className="rounded-3xl border border-sky-200/50 bg-[#f9fcff]/95 p-6 shadow-lg sm:p-8">
-              <h2 className="text-2xl font-extrabold text-[#1a2b48] sm:text-3xl">
-                How a round works
-              </h2>
-              <p className="mt-2 text-[#2d3f58]">
-                One message → investigate → verdict → your reply. Then you get
-                feedback before the next case.
-              </p>
-              <ol className="mt-5 space-y-3 text-sm text-[#2d3f58] sm:text-base">
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-[#117a8a]">
-                    <FaRegEnvelope className="inline h-4 w-4" />
-                  </span>
-                  <span>
-                    <span className="font-semibold">Read</span> the message
-                    like you would in real life.
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-[#c27803]">
-                    <FaSearch className="inline h-4 w-4" />
-                  </span>
-                  <span>
-                    <span className="font-semibold">Use tools</span> to reveal
-                    clues (max 3 per case).
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-[#117a8a]">
-                    <FaGavel className="inline h-4 w-4" />
-                  </span>
-                  <span>
-                    <span className="font-semibold">Pick a verdict</span> that
-                    matches the story the clues tell.
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-[#0f766e]">
-                    <FaPencil className="inline h-4 w-4" />
-                  </span>
-                  <span>
-                    <span className="font-semibold">Write a reply</span> that
-                    stays safe and shows good judgment.
-                  </span>
-                </li>
-              </ol>
+            <section className="rounded-3xl border border-teal-200/70 bg-linear-to-r from-teal-50 to-cyan-50 p-6 shadow-lg sm:p-8">
+              <div className="flex items-start gap-3">
+                <div>
+                  <h2 className="text-2xl font-extrabold text-[#1a2b48] sm:text-3xl">
+                    What to type in the reply box
+                  </h2>
+                  <p className="mt-1 text-sm text-[#2d3f58] sm:text-base">
+                    This box is where you write your response to the message.
+                    Tell what you refuse to do and what safe step you will take
+                    next.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-teal-200 bg-white/90 p-4 ring-1 ring-teal-100/70">
+                <p className="text-sm font-semibold text-slate-800 sm:text-base">
+                  Formula
+                </p>
+                <p className="mt-1 rounded-lg bg-teal-50 px-3 py-2 text-sm font-medium text-teal-900 sm:text-base">
+                  I won&apos;t [risky action]. I&apos;ll [safe verification step].
+                </p>
+
+                <p className="mt-3 text-sm font-semibold text-slate-800 sm:text-base">
+                  Example
+                </p>
+                <p className="mt-1 rounded-lg bg-cyan-50 px-3 py-2 text-sm text-slate-700 sm:text-base">
+                  I won&apos;t click this link. I&apos;ll check through the official app.
+                </p>
+
+              </div>
             </section>
 
             <section className="rounded-3xl border border-[#7cc4d4]/55 bg-linear-to-br from-[#e4f3f8] to-[#f5fbff] p-6 shadow-md sm:p-8">

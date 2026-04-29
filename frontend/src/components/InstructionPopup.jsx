@@ -42,7 +42,8 @@ function InstructionPopup({ onClose }) {
     {
       n: 4,
       title: "Write a safe reply",
-      blurb: "Do not share passwords, codes, payment details, or ID photos.",
+      blurb:
+        "Use 1-2 sentences: refuse the risky step, then say your safe verification step.",
       tone: "teal",
     },
   ];
@@ -137,26 +138,32 @@ function InstructionPopup({ onClose }) {
             </section>
 
             <section className="space-y-5">
-              <div className="rounded-2xl border border-sky-200/50 bg-[#f9fcff]/95 p-5 shadow-md">
-                <h3 className="text-xl font-extrabold">How a round works</h3>
-                <ol className="mt-3 space-y-2 text-sm text-[#2d3f58] sm:text-base">
-                  <li className="flex items-start gap-2">
-                    <FaRegEnvelope className="mt-0.5 h-4 w-4 text-[#117a8a]" />
-                    Read the message context.
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <FaSearch className="mt-0.5 h-4 w-4 text-[#c27803]" />
-                    Reveal up to 3 tool clues.
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <FaGavel className="mt-0.5 h-4 w-4 text-[#117a8a]" />
-                    Pick your verdict.
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <FaPencil className="mt-0.5 h-4 w-4 text-[#0f766e]" />
-                    Submit your safe reply.
-                  </li>
-                </ol>
+              <div className="rounded-2xl border border-teal-200/70 bg-linear-to-r from-teal-50 to-cyan-50 p-5 shadow-md">
+                <div className="flex items-start gap-2.5">
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-teal-700 ring-1 ring-teal-200">
+                    <FaPencil className="h-3.5 w-3.5" />
+                  </span>
+                  <div>
+                    <h3 className="text-xl font-extrabold">What to type in the reply box</h3>
+                    <p className="mt-0.5 text-sm text-[#2d3f58] sm:text-base">
+                      This box is where you write your response. Say what you
+                      refuse and the safe step you will take next.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 rounded-xl border border-teal-200 bg-white/90 p-3">
+                  <p className="text-sm font-semibold text-[#1a2b48]">Formula</p>
+                  <p className="mt-1 rounded-md bg-teal-50 px-2.5 py-2 text-sm font-medium text-teal-900">
+                    I won&apos;t [risky action]. I&apos;ll [safe verification step].
+                  </p>
+
+                  <p className="mt-2 text-sm font-semibold text-[#1a2b48]">Example</p>
+                  <p className="mt-1 rounded-md bg-cyan-50 px-2.5 py-2 text-sm text-[#2d3f58]">
+                    I won&apos;t click this link. I&apos;ll check through the official app.
+                  </p>
+
+                </div>
               </div>
 
               <div className="rounded-2xl border border-[#7cc4d4]/55 bg-linear-to-br from-[#e4f3f8] to-[#f5fbff] p-5 shadow-md">
