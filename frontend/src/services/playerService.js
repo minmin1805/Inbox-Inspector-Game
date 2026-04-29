@@ -53,5 +53,31 @@ const gradeInboxReply = async ({ caseId, playerReply, channel, correctVerdict, t
     throw new Error("cannot grade inbox reply");
 }
 
+const logTelemetryEvent = async ({
+    sessionId,
+    playerId,
+    gameId = "inbox-inspector",
+    eventType,
+    caseId,
+    caseNumber,
+    metadata,
+    timestamp,
+}) => {
+    const response = await axios.post('/api/telemetry/events', {
+        sessionId,
+        playerId,
+        gameId,
+        eventType,
+        caseId,
+        caseNumber,
+        metadata,
+        timestamp,
+    });
+    if (response.status === 201) {
+        return response.data;
+    }
+    throw new Error("cannot log telemetry event");
+}
 
-export { createPlayer, updatePlayer, getLeaderboard, gradeInboxReply };
+
+export { createPlayer, updatePlayer, getLeaderboard, gradeInboxReply, logTelemetryEvent };

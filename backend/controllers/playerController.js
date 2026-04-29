@@ -39,10 +39,6 @@ export const updatePlayer = async (req, res) => {
     const { id } = req.params;
 
     const {
-      score,
-      correctDecisions,
-      badge,
-      completedAt,
       inboxInspectorTotalScore,
       inboxInspectorCorrectDecisions,
       inboxInspectorBadge,
@@ -54,25 +50,6 @@ export const updatePlayer = async (req, res) => {
     }
 
     const updateData = {};
-
-    if (typeof score === 'number') {
-      updateData.score = score;
-    }
-
-    if (typeof correctDecisions === 'number') {
-      updateData.correctDecisions = correctDecisions;
-    }
-
-    if (typeof badge === 'string' && badge.trim() !== '') {
-      updateData.badge = badge.trim();
-    }
-
-    if (completedAt) {
-      const completedDate = new Date(completedAt);
-      if (!Number.isNaN(completedDate.getTime())) {
-        updateData.completedAt = completedDate;
-      }
-    }
 
     if (typeof inboxInspectorTotalScore === "number") {
       updateData.inboxInspectorTotalScore = inboxInspectorTotalScore;
@@ -112,10 +89,6 @@ export const updatePlayer = async (req, res) => {
     res.status(200).json({
       id: updatedPlayer._id.toString(),
       name: updatedPlayer.name,
-      score: updatedPlayer.score,
-      correctDecisions: updatedPlayer.correctDecisions,
-      badge: updatedPlayer.badge,
-      completedAt: updatedPlayer.completedAt,
       inboxInspectorTotalScore: updatedPlayer.inboxInspectorTotalScore,
       inboxInspectorCorrectDecisions: updatedPlayer.inboxInspectorCorrectDecisions,
       inboxInspectorBadge: updatedPlayer.inboxInspectorBadge,
@@ -129,38 +102,22 @@ export const updatePlayer = async (req, res) => {
 export const getLeaderboard = async (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit) || 4, 20);
-    const mode = String(req.query.mode || "").trim().toLowerCase();
-
-    if (mode === "inbox-inspector") {
-      const inboxPlayers = await Player.find({
-        inboxInspectorCompletedAt: { $ne: null },
-      })
-        .sort({ inboxInspectorTotalScore: -1 })
-        .limit(limit)
-        .select(
-          "name inboxInspectorTotalScore inboxInspectorCompletedAt inboxInspectorBadge"
-        )
-        .lean();
-
-      const players = inboxPlayers.map((p) => ({
-        name: p.name,
-        score: p.inboxInspectorTotalScore ?? 0,
-        completedAt: p.inboxInspectorCompletedAt ?? null,
-        badge: p.inboxInspectorBadge ?? "",
-      }));
-
-      return res.status(200).json({ players });
-    }
-
     const foundPlayers = await Player.find({
-      completedAt: { $ne: null },
+      inboxInspectorCompletedAt: { $ne: null },
     })
-      .sort({ score: -1 })
+      .sort({ inboxInspectorTotalScore: -1 })
       .limit(limit)
-      .select("name score completedAt badge")
+      .select("name inboxInspectorTotalScore inboxInspectorCompletedAt inboxInspectorBadge")
       .lean();
 
-    return res.status(200).json({ players: foundPlayers });
+    const players = foundPlayers.map((p) => ({
+      name: p.name,
+      score: p.inboxInspectorTotalScore ?? 0,
+      completedAt: p.inboxInspectorCompletedAt ?? null,
+      badge: p.inboxInspectorBadge ?? "",
+    }));
+
+    return res.status(200).json({ players });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

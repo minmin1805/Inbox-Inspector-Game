@@ -13,23 +13,6 @@ const playerSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    score: {
-      type: Number,
-      default: 0,
-    },
-    correctDecisions: {
-      type: Number,
-      default: 0,
-    },
-    badge: {
-      type: String,
-      default: '',
-      trim: true,
-    },
-    completedAt: {
-      type: Date,
-      default: null,
-    },
     inboxInspectorTotalScore: {
       type: Number,
       default: 0,

@@ -30,7 +30,7 @@ function ToolCallout({ text, tone = "urgency" }) {
   );
 }
 
-function DMWindow({ caseData, revealedTools = [] }) {
+function DMWindow({ caseData, revealedTools = [], onRiskyClick }) {
   if (!caseData) {
     return (
       <div className="rounded-3xl border border-slate-300/80 bg-white p-6 shadow-sm">
@@ -58,11 +58,13 @@ function DMWindow({ caseData, revealedTools = [] }) {
   const highlightAttachment = clueActive(revealedTools, "attachmentQrCheck");
   const openScamPreview = (source = "link") => {
     if (!caseData?.id) return;
+    onRiskyClick?.(source);
     const params = new URLSearchParams({ caseId: caseData.id, source });
     window.open(`/scam-preview?${params.toString()}`, "_blank", "noopener,noreferrer");
   };
   const openImageAttachmentLink = () => {
     if (!imageAttachment?.url) return;
+    onRiskyClick?.("attachment-link");
     window.open(imageAttachment.url, "_blank", "noopener,noreferrer");
   };
 

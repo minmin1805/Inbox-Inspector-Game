@@ -4,11 +4,12 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import levels from "../data/inboxInspectorLevels.json";
-import { gradeInboxReply, updatePlayer } from "../services/playerService";
+import { gradeInboxReply, logTelemetryEvent, updatePlayer } from "../services/playerService";
 import { getBadgeTitleAndBlurbFromScore } from "../utils/inboxInspectorBadges.js";
 
 const InboxInspectorContext = createContext(null);
@@ -124,6 +125,9 @@ export function InboxInspectorProvider({ children }) {
   const [player, setPlayer] = useState(null);
   const [isFinalizing, setIsFinalizing] = useState(false);
   const [isGradingReply, setIsGradingReply] = useState(false);
+  const sessionStartedRef = useRef(false);
+  const sessionStartMsRef = useRef(null);
+  const prevRevealedToolsRef = useRef([]);
 
   const currentCase = useMemo(
     () => cases[caseIndex] ?? cases[0],
@@ -146,6 +150,55 @@ export function InboxInspectorProvider({ children }) {
       navigate("/welcome", { replace: true });
     }
   }, [navigate]);
+
+  const fireTelemetry = useCallback(
+    (payload) => {
+      if (!player?.sessionId) return;
+      logTelemetryEvent({
+        sessionId: player.sessionId,
+        playerId: player.id,
+        gameId: "inbox-inspector",
+        ...payload,
+      }).catch(() => {});
+    },
+    [player]
+  );
+
+  useEffect(() => {
+    if (!player?.sessionId || sessionStartedRef.current) return;
+    sessionStartedRef.current = true;
+    sessionStartMsRef.current = Date.now();
+    fireTelemetry({
+      eventType: "session_start",
+      metadata: {
+        path: "/game",
+      },
+    });
+  }, [fireTelemetry, player]);
+
+  useEffect(() => {
+    const prev = prevRevealedToolsRef.current;
+    if (!currentCase?.id) return;
+    if (revealedTools.length < prev.length) {
+      prevRevealedToolsRef.current = revealedTools;
+      return;
+    }
+    const newlyRevealed = revealedTools.filter((t) => !prev.includes(t));
+    if (newlyRevealed.length > 0) {
+      newlyRevealed.forEach((toolKey) => {
+        fireTelemetry({
+          eventType: "tool_reveal",
+          caseId: currentCase.id,
+          caseNumber: currentCase.caseNumber,
+          metadata: {
+            toolKey,
+            toolsUsedCount: revealedTools.length,
+          },
+        });
+      });
+    }
+    prevRevealedToolsRef.current = revealedTools;
+  }, [currentCase, fireTelemetry, revealedTools]);
 
   const scoreReplyWithAI = useCallback(
     async (replyText) => {
@@ -274,6 +327,19 @@ export function InboxInspectorProvider({ children }) {
           nextCorrectVerdicts,
           nextTotalReplyScore,
         });
+        fireTelemetry({
+          eventType: "case_submit",
+          caseId: currentCase.id,
+          caseNumber: currentCase.caseNumber,
+          metadata: {
+            verdict,
+            verdictCorrect,
+            replyScore,
+            scanScore,
+            caseTotal,
+            toolsUsedCount: revealedTools.length,
+          },
+        });
         setShowFeedbackPopup(true);
       } finally {
         setIsGradingReply(false);
@@ -316,8 +382,21 @@ export function InboxInspectorProvider({ children }) {
       }
     }
 
+    fireTelemetry({
+      eventType: "session_complete",
+      metadata: {
+        totalScore: finalScore,
+        correctVerdicts: finalCorrect,
+        totalCases,
+        replySafetyPercent,
+        sessionDurationSec: sessionStartMsRef.current
+          ? Math.round((Date.now() - sessionStartMsRef.current) / 1000)
+          : null,
+      },
+    });
+
     navigate("/endgame", { state: resultState });
-  }, [feedbackData, navigate, player, totalCases]);
+  }, [feedbackData, fireTelemetry, navigate, player, totalCases]);
 
   const handleFeedbackClose = useCallback(async () => {
     if (isFinalizing) return;
@@ -330,8 +409,33 @@ export function InboxInspectorProvider({ children }) {
       setIsFinalizing(false);
       return;
     }
+    fireTelemetry({
+      eventType: "feedback_viewed",
+      caseId: currentCase.id,
+      caseNumber: currentCase.caseNumber,
+      metadata: {
+        lastCase: isLastCase,
+      },
+    });
     setCaseIndex((prev) => prev + 1);
-  }, [finalizeRunAndGoEndgame, isFinalizing, isLastCase]);
+  }, [currentCase, finalizeRunAndGoEndgame, fireTelemetry, isFinalizing, isLastCase]);
+
+  const trackRiskyCtaClick = useCallback(
+    (source) => {
+      if (!currentCase?.id) return;
+      fireTelemetry({
+        eventType: "risky_cta_click",
+        caseId: currentCase.id,
+        caseNumber: currentCase.caseNumber,
+        metadata: {
+          source,
+          theme: currentCase.theme,
+          channel: currentCase.channel,
+        },
+      });
+    },
+    [currentCase, fireTelemetry]
+  );
 
   const value = useMemo(
     () => ({
@@ -347,6 +451,7 @@ export function InboxInspectorProvider({ children }) {
       feedbackData,
       revealedTools,
       setRevealedTools,
+      trackRiskyCtaClick,
       handleInvestigationSubmit,
       handleFeedbackClose,
       openInstructionPopup: () => setShowInstructionPopup(true),
@@ -366,6 +471,7 @@ export function InboxInspectorProvider({ children }) {
       revealedTools,
       handleInvestigationSubmit,
       handleFeedbackClose,
+      trackRiskyCtaClick,
     ]
   );
 

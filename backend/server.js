@@ -5,6 +5,7 @@ import path from 'path';
 import connectDB from './lib/db.js';
 import playerRoutes from './routes/playerRoute.js';
 import aiRoutes from './routes/aiRoute.js';
+import telemetryRoutes from './routes/telemetryRoute.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(express.json());
 //API routes
 app.use('/api/players', playerRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/telemetry', telemetryRoutes);
 
 const PORT = process.env.PORT || 8000;
 
