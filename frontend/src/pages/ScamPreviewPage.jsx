@@ -8,6 +8,8 @@ const PAGE_BY_THEME = {
     fakeUrl: "claim-reward-now.win/secure-claim",
     title: "Prize Claim Center",
     subtitle: "Claim your bonus in 10:00 before it expires",
+    ctaLabel: "Claim Reward",
+    tone: "rose",
     flags: [
       "Countdown pressure to act immediately",
       "Asks for account confirmation outside trusted app",
@@ -19,6 +21,8 @@ const PAGE_BY_THEME = {
     fakeUrl: "portal.riversidehs.edu/security/devices",
     title: "Riverside High Security",
     subtitle: "Review active devices in the official school portal",
+    ctaLabel: "Review Devices",
+    tone: "emerald",
     flags: [
       "Expected school domain and routine security flow",
       "No requests for codes or payments in-message",
@@ -30,6 +34,8 @@ const PAGE_BY_THEME = {
     fakeUrl: "summerwork-hire.net/pay-training",
     title: "Training Seat Reservation",
     subtitle: "Pay fee now to hold your onboarding spot",
+    ctaLabel: "Pay Fee",
+    tone: "rose",
     flags: [
       "Upfront fee request before normal hiring steps",
       "Pushes payment + ID upload in one flow",
@@ -41,6 +47,8 @@ const PAGE_BY_THEME = {
     fakeUrl: "parcel-track-mail.com/portal/address-confirm",
     title: "Delivery Address Portal",
     subtitle: "Confirm details to avoid return to sender",
+    ctaLabel: "Confirm Address",
+    tone: "amber",
     flags: [
       "Looks plausible but sender/domain is generic",
       "Could be real or fake: verify independently first",
@@ -52,6 +60,8 @@ const PAGE_BY_THEME = {
     fakeUrl: "eliteevents-fastpay.co/deposit",
     title: "Event Crew Fast-Track",
     subtitle: "Send deposit + ID to secure your travel slot",
+    ctaLabel: "Secure Slot",
+    tone: "violet",
     flags: [
       "Deposit + ID ask is a common fake-job pattern",
       "Uses secrecy and urgency to pressure action",
@@ -63,6 +73,8 @@ const PAGE_BY_THEME = {
     fakeUrl: "ctzn.io/artshow-2026/submit",
     title: "Contest Submission Form",
     subtitle: "Complete your nomination before tonight's deadline",
+    ctaLabel: "Submit Entry",
+    tone: "amber",
     flags: [
       "Short-link hides final destination",
       "Deadline pressure can be exploited by scammers",
@@ -82,6 +94,76 @@ const BADGE_LABEL = {
   sketchy: "Training: Unverified destination",
   legit: "Training: Likely safe destination",
 };
+
+const HERO_BY_TONE = {
+  rose: "from-rose-50 via-rose-100 to-amber-50",
+  amber: "from-amber-50 via-orange-50 to-yellow-50",
+  emerald: "from-emerald-50 via-teal-50 to-sky-50",
+  violet: "from-violet-50 via-purple-50 to-indigo-50",
+};
+
+function MockContent({ theme, page }) {
+  if (theme === "prize_scam") {
+    return (
+      <>
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-3">
+          <p className="text-xs font-bold uppercase tracking-wide text-rose-700">Reward Countdown</p>
+          <p className="mt-1 text-2xl font-extrabold text-rose-800">09:48</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <input readOnly value="Enter full name" className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500" />
+          <input readOnly value="Confirm account details" className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500" />
+        </div>
+      </>
+    );
+  }
+
+  if (theme === "labor_job_scam" || theme === "travel_job_deposit") {
+    return (
+      <>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <input readOnly value="Upload ID photo" className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500" />
+          <input readOnly value="Pay deposit / fee" className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500" />
+        </div>
+        <p className="mt-2 text-xs font-semibold text-rose-700">“Secure your slot now — limited spots.”</p>
+      </>
+    );
+  }
+
+  if (theme === "delivery_sketchy") {
+    return (
+      <>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <input readOnly value="Address line 1" className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500" />
+          <input readOnly value="Postal code" className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500" />
+        </div>
+        <p className="mt-2 text-xs text-amber-700">May include correction fee if details are incomplete.</p>
+      </>
+    );
+  }
+
+  if (theme === "contest_verify_first") {
+    return (
+      <>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <input readOnly value="Your entry title" className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500" />
+          <input readOnly value="Upload your artwork" className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500" />
+        </div>
+        <p className="mt-2 text-xs text-amber-700">Deadline tonight at 11:59 PM.</p>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <input readOnly value="Trusted device review" className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500" />
+        <input readOnly value="Sign out unknown sessions" className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500" />
+      </div>
+      <p className="mt-2 text-xs text-emerald-700">No payments or code sharing requested.</p>
+    </>
+  );
+}
 
 function ScamPreviewPage() {
   const navigate = useNavigate();
@@ -126,7 +208,7 @@ function ScamPreviewPage() {
           <div className="border-b border-slate-200 bg-slate-50 px-4 py-3">
             <p className="truncate text-sm font-semibold text-slate-700">{page.fakeUrl}</p>
           </div>
-          <div className="p-5 sm:p-6">
+          <div className={["bg-linear-to-r p-5 sm:p-6", HERO_BY_TONE[page.tone]].join(" ")}>
             <span
               className={[
                 "inline-flex rounded-full border px-3 py-1 text-xs font-bold",
@@ -138,27 +220,25 @@ function ScamPreviewPage() {
             <h1 className="mt-3 text-2xl font-extrabold text-slate-900 sm:text-3xl">{page.title}</h1>
             <p className="mt-1 text-slate-700">{page.subtitle}</p>
 
-            <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div className="mt-5 rounded-xl border border-slate-200 bg-white/85 p-4 backdrop-blur-sm">
               <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
                 Simulated destination content
               </p>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <input
-                  readOnly
-                  value="Full name"
-                  className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500"
-                />
-                <input
-                  readOnly
-                  value="Email / phone"
-                  className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-500"
-                />
+              <div className="mt-3">
+                <MockContent theme={caseData.theme} page={page} />
               </div>
               <button
                 type="button"
-                className="mt-3 rounded-lg bg-slate-800 px-4 py-2 text-sm font-bold text-white"
+                className={[
+                  "mt-3 rounded-lg px-4 py-2 text-sm font-bold text-white",
+                  page.variant === "legit"
+                    ? "bg-emerald-700"
+                    : page.variant === "sketchy"
+                      ? "bg-amber-700"
+                      : "bg-rose-700",
+                ].join(" ")}
               >
-                Continue
+                {page.ctaLabel}
               </button>
             </div>
           </div>
